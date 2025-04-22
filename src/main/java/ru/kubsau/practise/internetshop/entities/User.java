@@ -1,4 +1,4 @@
-package ru.kubsau.practise.internetshop.repositories.product;
+package ru.kubsau.practise.internetshop.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,27 +10,24 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "product")
-public class Product {
+@Table(name = "users")
+public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
-    Long id;
+    @Column(nullable = false, length = 100)
+    String username;
 
-    @Column(nullable = false, length = 50, unique = true)
-    String name;
-
-    @Column(name = "is_suitable", nullable = false)
-    boolean isSuitable;
+    @Column(nullable = false, length = 100)
+    String email;
 
     @Column(nullable = false)
-    int count;
+    String password;
 
-    @Column( nullable = false)
-    int price;
+    @Column(nullable = false, length = 20)
+    String role;
 
-    @Column(length = Integer.MAX_VALUE)
-    String description;
+    @OneToOne
+    @JoinColumn(name = "bucketowner", nullable = false)
+    Bucket bucketOwner;
 
     @Override
     public final boolean equals(Object o) {
@@ -39,8 +36,8 @@ public class Product {
         Class<?> oEffectiveClass = o instanceof HibernateProxy proxy ? proxy.getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy proxy ? proxy.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Product product = (Product) o;
-        return getId() != null && Objects.equals(getId(), product.getId());
+        User user = (User) o;
+        return getUsername() != null && Objects.equals(getUsername(), user.getUsername());
     }
 
     @Override
