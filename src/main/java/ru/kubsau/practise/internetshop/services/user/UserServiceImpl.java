@@ -18,11 +18,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
     BucketService bucketService;
+    UserValidator userValidator;
 
     @Override
     @Transactional
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userValidator.validate(user);
         tryToSaveUser(user);
     }
 
@@ -40,22 +42,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
         return new UserDetailsImpl(user);
-    }
-
-    @Override
-    @Transactional
-    public void updateUsername(String newUsername, String oldUsername) {
-        userRepository.findByUsername(oldUsername)
-                .orElseThrow(() -> new UsernameNotFoundException(oldUsername + " not found"));
-        tryToUpdateUsername(newUsername, oldUsername);
-    }
-
-    private void tryToUpdateUsername(String newUsername, String oldUsername) {
-        try {
-            bucketService.updateUsername(newUsername, oldUsername);
-            userRepository.updateUsername(newUsername, oldUsername);
-        } catch (Exception e) {
-            throw new InvalidRequestException(e.getMessage());
-        }
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import ru.kubsau.practise.internetshop.repositories.UserRepository;
 import ru.kubsau.practise.internetshop.services.bucket.BucketService;
 import ru.kubsau.practise.internetshop.services.user.UserServiceImpl;
+import ru.kubsau.practise.internetshop.services.user.UserValidator;
 
 @Configuration
 @EnableWebSecurity
@@ -29,7 +30,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return new UserServiceImpl(userRepository, new BCryptPasswordEncoder(), bucketService);
+        return new UserServiceImpl(userRepository, new BCryptPasswordEncoder(), bucketService, new UserValidator());
     }
 
     @Bean

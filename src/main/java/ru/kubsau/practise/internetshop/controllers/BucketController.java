@@ -24,6 +24,11 @@ public class BucketController {
         bucketService.clearAllProductsInBucket(username.trim());
     }
 
+    @PatchMapping("/remove-all-products-this-type")
+    public void removeAllProductsOfThisTypeFromBucket(@RequestParam String username, @RequestParam long productId) {
+        bucketService.removeAllProductsOfThisTypeFromBucket(username.trim(), productId);
+    }
+
     @PatchMapping("/remove-product")
     public void removeProductFromBucket(@RequestParam String username, @RequestParam long productId) {
         bucketService.removeProductFromBucket(username.trim(), productId);

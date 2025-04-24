@@ -27,9 +27,4 @@ public interface BucketRepository extends JpaRepository<Bucket, String> {
     @Query(value = "insert into bucket(username) values (trim(:username))",
             nativeQuery = true)
     void saveBucket(String username);
-
-    @Modifying
-    @Query(value = "update bucket set username = trim(:newUsername) where username = trim(:oldUsername)",
-            nativeQuery = true)
-    void updateOwnerName(String newUsername, String oldUsername);
 }

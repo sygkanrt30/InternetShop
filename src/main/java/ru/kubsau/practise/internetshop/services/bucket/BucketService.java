@@ -10,11 +10,11 @@ public interface BucketService {
 
     void clearAllProductsInBucket(String username);
 
+    void removeAllProductsOfThisTypeFromBucket(String username, long productId);
+
     void removeProductFromBucket(String username, long productId);
 
     void createBucket(String username);
 
     void addProductsToList(Bucket bucket);
-
-    void updateUsername(String newUsername, String oldUsername);
 }

@@ -11,7 +11,7 @@
         <file>slf4jlogback.log</file>
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>slf4jlogback.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>log/slf4jlogback.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>10</maxHistory>
             <totalSizeCap>5GB</totalSizeCap>
         </rollingPolicy>

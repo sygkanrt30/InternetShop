@@ -10,10 +10,7 @@ import ru.kubsau.practise.internetshop.repositories.BucketRepository;
 import ru.kubsau.practise.internetshop.entities.Product;
 import ru.kubsau.practise.internetshop.services.product.ProductService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @AllArgsConstructor
 @Slf4j
@@ -55,14 +52,38 @@ public class BucketServiceImpl implements BucketService {
 
     @Transactional
     @Override
-    public void removeProductFromBucket(String username, long productId) {
+    public void removeAllProductsOfThisTypeFromBucket(String username, long productId) {
         Optional<Bucket> bucket = bucketRepository.getBucket(username);
         if (bucket.isPresent()) {
-            long[] listOfProductIds = Arrays.stream(bucket.get().getProductIds()).filter(p -> p == productId).toArray();
+            long[] arr = bucket.get().getProductIds();
+            long[] listOfProductIds = Arrays.stream(arr).filter(p -> p != productId).toArray();
             bucketRepository.updateListOfProductsInBucket(username, listOfProductIds);
             return;
         }
         logAndThrowExceptionIfBucketNotFound(username);
+    }
+
+    @Transactional
+    @Override
+    public void removeProductFromBucket(String username, long productId) {
+        Optional<Bucket> bucket = bucketRepository.getBucket(username);
+        if (bucket.isPresent()) {
+            long[] arr = bucket.get().getProductIds();
+            replaceIdWithTagForRemoval(productId, arr);
+            long[] listOfProductIds = Arrays.stream(arr).filter(p -> p != 0).toArray();
+            bucketRepository.updateListOfProductsInBucket(username, listOfProductIds);
+            return;
+        }
+        logAndThrowExceptionIfBucketNotFound(username);
+    }
+
+    private void replaceIdWithTagForRemoval(long productId, long[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == productId) {
+                arr[i] = 0;
+                break;
+            }
+        }
     }
 
     @Override
@@ -90,11 +111,5 @@ public class BucketServiceImpl implements BucketService {
         System.arraycopy(productIds, 0, arrayOfProductIds, 0, productIds.length);
         System.arraycopy(listOfProducts, 0, arrayOfProductIds, productIds.length, listOfProducts.length);
         return arrayOfProductIds;
-    }
-
-    @Override
-    @Transactional
-    public void updateUsername(String newUsername, String oldUsername) {
-        bucketRepository.updateOwnerName(newUsername, oldUsername);
     }
 }
