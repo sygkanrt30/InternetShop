@@ -16,22 +16,22 @@ public class BucketController {
 
     @GetMapping(path = "/get-by-username/{username}")
     public List<Product> getByUsername(@PathVariable String username) {
-        return bucketService.getProductsInBucket(username.trim());
+        return bucketService.getProductsInBucket(username);
     }
 
     @PatchMapping("/clear-bucket/{username}")
     public void clearBucket(@PathVariable String username) {
-        bucketService.clearAllProductsInBucket(username.trim());
+        bucketService.clearAllProductsInBucket(username);
     }
 
     @PatchMapping("/remove-all-products-this-type")
     public void removeAllProductsOfThisTypeFromBucket(@RequestParam String username, @RequestParam long productId) {
-        bucketService.removeAllProductsOfThisTypeFromBucket(username.trim(), productId);
+        bucketService.removeAllProductsOfThisTypeFromBucket(username, productId);
     }
 
     @PatchMapping("/remove-product")
     public void removeProductFromBucket(@RequestParam String username, @RequestParam long productId) {
-        bucketService.removeProductFromBucket(username.trim(), productId);
+        bucketService.removeProductFromBucket(username, productId);
     }
 
     @PatchMapping("/add-products")

@@ -26,7 +26,7 @@ public class Product {
     @Column(nullable = false)
     int count;
 
-    @Column( nullable = false)
+    @Column(nullable = false)
     int price;
 
     @Column(length = Integer.MAX_VALUE)

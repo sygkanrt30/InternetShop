@@ -25,6 +25,7 @@ public class BucketServiceImpl implements BucketService {
         String[] listOfIds = stringOfIds.isEmpty() ? new String[0] : stringOfIds.split(",");
         return convertListWithIdToListWithProduct(listOfIds);
     }
+
     private List<Product> convertListWithIdToListWithProduct(String[] productIds) {
         List<Product> products = new ArrayList<>();
         for (String productId : productIds) {
