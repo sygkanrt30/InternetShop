@@ -22,7 +22,7 @@ public class User {
     @Column(nullable = false)
     String password;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     String role;
 
     @OneToOne

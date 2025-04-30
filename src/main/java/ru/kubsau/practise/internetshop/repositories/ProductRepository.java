@@ -8,6 +8,7 @@ import ru.kubsau.practise.internetshop.entities.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
     @Query(value = "update product set count = count - :countDecrement where id = :id",
             nativeQuery = true)
     @Modifying

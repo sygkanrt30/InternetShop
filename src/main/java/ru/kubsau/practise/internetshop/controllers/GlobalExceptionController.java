@@ -7,39 +7,52 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.kubsau.practise.internetshop.services.exceptions.AppErrorHandler;
 import ru.kubsau.practise.internetshop.services.exceptions.InvalidRequestException;
-
-import java.time.LocalTime;
 
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionController {
+    public static final String ERROR_WORD = "ОШИБКА:";
+    public static final String DETAILS_WORD = "Подробности:";
     @ExceptionHandler
-    public ResponseEntity<AppErrorHandler> catchInvalidRequestException(InvalidRequestException e) {
+    public ResponseEntity<String> catchInvalidRequestException(InvalidRequestException e) {
         return getAppErrorHandlerResponseEntity(e, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @ExceptionHandler
-    public ResponseEntity<AppErrorHandler> catchEntityNotFoundException(EntityNotFoundException e) {
+    public ResponseEntity<String> catchEntityNotFoundException(EntityNotFoundException e) {
         return getAppErrorHandlerResponseEntity(e, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    public ResponseEntity<AppErrorHandler> catchIllegalStateException(IllegalStateException e) {
+    public ResponseEntity<String> catchIllegalStateException(IllegalStateException e) {
         return getAppErrorHandlerResponseEntity(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler
-    public ResponseEntity<AppErrorHandler> catchUsernameNotFoundException(UsernameNotFoundException e) {
+    public ResponseEntity<String> catchUsernameNotFoundException(UsernameNotFoundException e) {
         return getAppErrorHandlerResponseEntity(e, HttpStatus.NOT_FOUND);
     }
 
-    private ResponseEntity<AppErrorHandler> getAppErrorHandlerResponseEntity(Exception e, HttpStatus status) {
-        log.error(e.getMessage(), e);
-        return new ResponseEntity<>(new AppErrorHandler(status.value(),
-                e.getMessage(),
-                LocalTime.now()),
-                status);
+    private ResponseEntity<String> getAppErrorHandlerResponseEntity(Exception e, HttpStatus status) {
+        String error = e.getMessage();
+        log.error(error, e);
+        int startIndex = error.indexOf(ERROR_WORD);
+        return getResponseEntity(status, startIndex, error);
+    }
+
+    private ResponseEntity<String> getResponseEntity(HttpStatus status, int startIndex, String error) {
+        if (startIndex != -1) {
+            String replacedErrorMessage = getSubStringSqlError(startIndex, error);
+            return ResponseEntity.status(status).body("{\"message\":\"" + replacedErrorMessage + "\"}");
+        }
+        return ResponseEntity.status(status).body("{\"message\":\"" + error + "\"}");
+    }
+
+    private String getSubStringSqlError(int startIndex, String error) {
+        startIndex += 8;
+        int endIndex = error.indexOf(DETAILS_WORD) - 3;
+        String errorMessage = error.substring(startIndex, endIndex);
+        return errorMessage.replace("\"", "'");
     }
 }

@@ -23,8 +23,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void save(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userValidator.validate(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         tryToSaveUser(user);
     }
 
@@ -39,8 +39,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
+        User user = getUserOrElseThrow(username);
         return new UserDetailsImpl(user);
+    }
+
+    private User getUserOrElseThrow(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
+    }
+
+    @Override
+    public boolean isRegistered(String username, String password) {
+        User userForUsername = getUserOrElseThrow(username);
+        return passwordEncoder.matches(password, userForUsername.getPassword());
     }
 }
