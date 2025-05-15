@@ -10,16 +10,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/products")
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProductController {
     ProductService productService;
 
     @GetMapping
     public List<Product> getAll() {
         return productService.getAllProducts();
-    }
-
-    @GetMapping("/get/{id}")
-    public Product getProductById(@PathVariable long id) {
-        return productService.getProductById(id);
     }
 }

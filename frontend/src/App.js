@@ -1,9 +1,10 @@
 import Register from "./component/register/Register";
 import Authorization from "./component/authorization/Authorization"
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import MainPage from "./component/main_page/MainPage";
-import { AuthProvider } from './component/authorization/AuthContext';
-import ProtectedRoute from './component/authorization/ProtectedRoute';
+import {AuthProvider} from './component/security/AuthContext';
+import ProtectedRoute from './component/security/ProtectedRoute';
+import Bucket from "./component/bucket/Bucket"
 
 
 function App() {
@@ -13,7 +14,9 @@ function App() {
                 <Routes>
                     <Route path="/login" element={<Authorization />} />
                     <Route path="/signup" element={<Register />} />
-                    <Route path="/internet-shop" element={<ProtectedRoute><MainPage /></ProtectedRoute>}/></Routes>
+                    <Route path="/internet-shop" element={<ProtectedRoute><MainPage /></ProtectedRoute>}/>
+                    <Route path="/bucket" element={<ProtectedRoute><Bucket /></ProtectedRoute>}/>
+                </Routes>
             </Router>
         </AuthProvider>
     );

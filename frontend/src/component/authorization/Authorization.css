@@ -76,6 +76,7 @@ input[type="number"]:focus {
     cursor: pointer;
     transition: background-color 0.3s;
 }
+
 .button-register:hover {
     background-color: #adac9a;
 }

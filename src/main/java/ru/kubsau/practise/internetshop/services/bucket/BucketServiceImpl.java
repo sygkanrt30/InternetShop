@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.kubsau.practise.internetshop.entities.Bucket;
-import ru.kubsau.practise.internetshop.repositories.BucketRepository;
 import ru.kubsau.practise.internetshop.entities.Product;
+import ru.kubsau.practise.internetshop.repositories.BucketRepository;
 import ru.kubsau.practise.internetshop.services.product.ProductService;
 
 import java.util.*;
@@ -20,71 +20,77 @@ public class BucketServiceImpl implements BucketService {
     ProductService productService;
 
     @Override
-    public List<Product> getProductsInBucket(String username) {
+    public Map<Product, Long> getProductsInBucket(String username) {
         String stringOfIds = bucketRepository.getListOfProducts(username);
         String[] listOfIds = stringOfIds.isEmpty() ? new String[0] : stringOfIds.split(",");
-        return convertListWithIdToListWithProduct(listOfIds);
+        return convertArrWithIdToMapWithProduct(listOfIds);
     }
 
-    private List<Product> convertListWithIdToListWithProduct(String[] productIds) {
-        List<Product> products = new ArrayList<>();
+    private Map<Product, Long> convertArrWithIdToMapWithProduct(String[] productIds) {
+        Map<Product, Long> products = new HashMap<>();
         for (String productId : productIds) {
             var product = productService.getProductById(Long.parseLong(productId));
-            products.add(product);
+            putProductInMap(products, product);
         }
         return products;
+    }
+
+    private void putProductInMap(Map<Product, Long> products, Product product) {
+        if (products.containsKey(product)) {
+            products.put(product, products.get(product) + 1);
+        } else {
+            products.putIfAbsent(product, 1L);
+        }
     }
 
     @Transactional
     @Override
     public void clearAllProductsInBucket(String username) {
-        logAndThrowExceptionIfBucketNotFound(username);
+        getBucketOrThrowException(username);
         long[] emptyArray = new long[0];
         bucketRepository.updateListOfProductsInBucket(username, emptyArray);
         log.info("All products cleared in bucket with username {}", username);
     }
 
-    private void logAndThrowExceptionIfBucketNotFound(String username) {
-        if (bucketRepository.getBucket(username).isEmpty()) {
-            log.error("Bucket with username {} not found", username);
-            throw new InvalidRequestStateException("Bucket with username " + username + " not found");
-        }
+    private Bucket getBucketOrThrowException(String username) {
+        return bucketRepository.getBucket(username).orElseThrow(
+                () -> new InvalidRequestStateException("Bucket with name " + username + " not found")
+        );
     }
 
     @Transactional
     @Override
     public void removeAllProductsOfThisTypeFromBucket(String username, long productId) {
-        Optional<Bucket> bucket = bucketRepository.getBucket(username);
-        if (bucket.isPresent()) {
-            long[] arr = bucket.get().getProductIds();
-            long[] listOfProductIds = Arrays.stream(arr).filter(p -> p != productId).toArray();
-            bucketRepository.updateListOfProductsInBucket(username, listOfProductIds);
-            return;
-        }
-        logAndThrowExceptionIfBucketNotFound(username);
+        Bucket bucket = getBucketOrThrowException(username);
+        long[] arr = bucket.getProductIds();
+        long[] arrWithoutRemoteId = Arrays.stream(arr)
+                .filter(p -> p != productId)
+                .toArray();
+        bucketRepository.updateListOfProductsInBucket(username, arrWithoutRemoteId);
+        log.info("All products of type removed from bucket with username {}", username);
     }
 
     @Transactional
     @Override
     public void removeProductFromBucket(String username, long productId) {
-        Optional<Bucket> bucket = bucketRepository.getBucket(username);
-        if (bucket.isPresent()) {
-            long[] arr = bucket.get().getProductIds();
-            replaceIdWithTagForRemoval(productId, arr);
-            long[] listOfProductIds = Arrays.stream(arr).filter(p -> p != 0).toArray();
-            bucketRepository.updateListOfProductsInBucket(username, listOfProductIds);
-            return;
-        }
-        logAndThrowExceptionIfBucketNotFound(username);
+        Bucket bucket = getBucketOrThrowException(username);
+        long[] arr = bucket.getProductIds();
+        long[] arrWithoutRemoteId = deleteOneIdFromArray(arr, productId);
+        bucketRepository.updateListOfProductsInBucket(username, arrWithoutRemoteId);
+        log.info("Product with id: {} removed from bucket with username {}", productId, username);
     }
 
-    private void replaceIdWithTagForRemoval(long productId, long[] arr) {
+    private long[] deleteOneIdFromArray(long[] arr, long productId) {
+        long[] arrWithoutRemoteId = new long[arr.length];
+        var flag = false;
         for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == productId) {
-                arr[i] = 0;
-                break;
+            if (arr[i] == productId && !flag) {
+                flag = true;
+                continue;
             }
+            arrWithoutRemoteId[i] = arr[i];
         }
+        return Arrays.stream(arrWithoutRemoteId).filter(p -> p != 0).toArray();
     }
 
     @Override
@@ -94,23 +100,20 @@ public class BucketServiceImpl implements BucketService {
 
     @Transactional
     @Override
-    public void addProductsToList(Bucket bucket) {
-        String username = bucket.getUsername();
-        Optional<Bucket> optionalBucket = bucketRepository.getBucket(username);
-        if (optionalBucket.isPresent()) {
-            long[] arrayOfProductIds = addIdsToArray(optionalBucket.get().getProductIds(), bucket.getProductIds());
-            bucketRepository.updateListOfProductsInBucket(username, arrayOfProductIds);
-            log.info("Added products to bucket with username {}", username);
-            return;
-        }
-        logAndThrowExceptionIfBucketNotFound(username);
+    public void addProductsToList(String username, long productId) {
+        Bucket bucket = getBucketOrThrowException(username);
+        long[] oneIdArr = new long[]{productId};
+        long[] arrayOfProductIds = addIdsToArray(bucket.getProductIds(), oneIdArr);
+        bucketRepository.updateListOfProductsInBucket(username, arrayOfProductIds);
+        log.info("Added products to bucket with username {}", username);
     }
 
-    private long[] addIdsToArray(long[] listOfProducts, long[] productIds) {
-        int sumOfTwoArrLen = listOfProducts.length + productIds.length;
-        long[] arrayOfProductIds = new long[sumOfTwoArrLen];
-        System.arraycopy(productIds, 0, arrayOfProductIds, 0, productIds.length);
-        System.arraycopy(listOfProducts, 0, arrayOfProductIds, productIds.length, listOfProducts.length);
+    private long[] addIdsToArray(long[] oldListOfProducts, long[] newProducts) {
+        int oldLstLents = oldListOfProducts.length;
+        int newLstLents = newProducts.length;
+        long[] arrayOfProductIds = new long[oldLstLents + newLstLents];
+        System.arraycopy(newProducts, 0, arrayOfProductIds, 0, newLstLents);
+        System.arraycopy(oldListOfProducts, 0, arrayOfProductIds, newLstLents, oldLstLents);
         return arrayOfProductIds;
     }
 }

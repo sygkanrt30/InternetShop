@@ -12,8 +12,9 @@ import ru.kubsau.practise.internetshop.services.exceptions.InvalidRequestExcepti
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionController {
-    public static final String ERROR_WORD = "ОШИБКА:";
-    public static final String DETAILS_WORD = "Подробности:";
+    static String ERROR_WORD = "ОШИБКА:";
+    static String DETAILS_WORD = "Подробности:";
+
     @ExceptionHandler
     public ResponseEntity<String> catchInvalidRequestException(InvalidRequestException e) {
         return getAppErrorHandlerResponseEntity(e, HttpStatus.NOT_ACCEPTABLE);

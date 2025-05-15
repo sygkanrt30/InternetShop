@@ -18,11 +18,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
     BucketService bucketService;
-    UserValidator userValidator;
 
     @Override
     @Transactional
     public void save(User user) {
+        UserValidator userValidator = new UserValidator();
         userValidator.validate(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         tryToSaveUser(user);

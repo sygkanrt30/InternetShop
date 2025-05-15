@@ -1,0 +1,76 @@
+.bucket-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.products-list {
+    margin-bottom: 20px;
+}
+
+.product-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+button {
+    margin: 5px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.remove-button {
+    background-color: #ff4d4d;
+}
+
+.remove-button:hover {
+    background-color: #cc0000;
+}
+
+.remove-one-button {
+    background-color: #ffcc00;
+}
+
+.remove-one-button:hover {
+    background-color: #cc9900;
+}
+
+.clear-button {
+    background-color: #ff4d4d;
+    float: right;
+}
+
+.clear-button:hover {
+    background-color: #cc0000;
+}
+
+.order-button {
+    background-color: #007bff;
+    float: right;
+    margin-right: 10px;
+}
+
+.order-button:hover {
+    background-color: #0056b3;
+}
+
+.comeback-button {
+    background-color: #adac9a;
+}
+
+.comeback-button:hover {
+    background-color: #7b7a6d;
+}
+
+.total-sum {
+    margin-top: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    text-align: right;
+}

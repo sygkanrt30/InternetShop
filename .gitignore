@@ -12,5 +12,6 @@ target/
 .sts4-cache
 .idea
 .mvn
-log
+logs
+src/main/resources/orders
 

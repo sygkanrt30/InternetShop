@@ -5,17 +5,18 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.kubsau.practise.internetshop.entities.Product;
 import ru.kubsau.practise.internetshop.repositories.ProductRepository;
+import ru.kubsau.practise.internetshop.services.product.ProductService;
 
 @SuppressWarnings("ALl")
 @Component
 @AllArgsConstructor
 public class ProductAvailabilityTracker {
+    ProductService productService;
     ProductRepository productRepository;
 
     @Transactional
-    public void decrementProductCount(String nameOfProduct, long amountDecrement) {
-        Product product = productRepository.getProductsByName(nameOfProduct);
-        long id = product.getId();
+    public void decrementProductCount(Product product, long amountDecrement) {
+        var id = product.getId();
         if (isNotEnoughProductInDB(product, amountDecrement)) {
             throw new IllegalStateException("There is no so much of this product in the warehouse");
         }

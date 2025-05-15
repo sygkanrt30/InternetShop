@@ -7,7 +7,8 @@ import ru.kubsau.practise.internetshop.services.exceptions.InvalidRequestExcepti
 
 @Component
 public class UserValidator {
-    @NonFinal User user;
+    @NonFinal
+    User user;
 
     public void validate(User userToValidate) {
         this.user = userToValidate;

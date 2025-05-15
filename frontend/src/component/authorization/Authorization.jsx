@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './Authorization.css';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+import {useNavigate} from 'react-router-dom';
+import {useAuth} from '../security/AuthContext';
 
 const Authorization = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const {login} = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -19,12 +19,13 @@ const Authorization = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({username, password}),
             });
 
             const data = await response.json();
 
             if (response.ok) {
+                localStorage.setItem("username", username)
                 login()
                 navigate("/internet-shop")
             } else {
@@ -37,7 +38,7 @@ const Authorization = () => {
         }
     };
 
-    const handleRegister = () =>{
+    const handleRegister = () => {
         navigate("/signup")
     };
 

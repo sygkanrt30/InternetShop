@@ -18,8 +18,4 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             nativeQuery = true)
     @Modifying
     void makeFalseIsAvailableColumn(long id);
-
-    @Query(value = "select * from product where name = trim(:nameOfProduct)",
-            nativeQuery = true)
-    Product getProductsByName(String nameOfProduct);
 }

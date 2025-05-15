@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import './Register.css';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import {useAuth} from "../security/AuthContext";
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -8,6 +9,7 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
+    const {login} = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -35,6 +37,8 @@ const Register = () => {
             const data = await response.json();
 
             if (response.ok) {
+                localStorage.setItem("username", username)
+                login()
                 navigate("/internet-shop")
             } else {
                 setMessage('Ошибка регистрации');
@@ -45,7 +49,7 @@ const Register = () => {
         }
     };
 
-    const handleAuth = () =>{
+    const handleAuth = () => {
         navigate("/login")
     };
 
