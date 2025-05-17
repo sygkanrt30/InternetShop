@@ -9,6 +9,7 @@ import ru.kubsau.practise.internetshop.services.order.OrderService;
 
 @RestController
 @RequestMapping("/order")
+@CrossOrigin(origins = "http://localhost:3000")
 @AllArgsConstructor
 public class OrderController {
     OrderService orderService;

@@ -1,22 +1,30 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import './Bucket.css';
+import {useAuth} from "../security/AuthContext";
 
 const Bucket = () => {
     const [products, setProducts] = useState();
     const username = localStorage.getItem("username");
     const [isLoading, setIsLoading] = useState(true);
+    const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (!isAuthenticated) {
+            navigate("/login");
+            return;
+        }
+
         const fetchProducts = async () => {
             const response = await fetch(`http://localhost:8080/buckets/get-by-username/${encodeURIComponent(username)}`);
             const data = await response.json();
             setProducts(data);
             setIsLoading(false);
         };
-        fetchProducts()
-    }, [username]);
+
+        fetchProducts();
+    }, [username, isAuthenticated, navigate]);
 
     const handleRemoveProduct = async (id) => {
         const response = await fetch(
@@ -31,7 +39,7 @@ const Bucket = () => {
     };
 
     const handleRefresh = () => {
-        window.location.reload();
+        window.location.assign("http://localhost:3000/bucket");
     };
 
     const handleRemoveOne = async (id) => {

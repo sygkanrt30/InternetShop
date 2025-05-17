@@ -37,8 +37,7 @@ const Register = () => {
             const data = await response.json();
 
             if (response.ok) {
-                localStorage.setItem("username", username)
-                login()
+                login(username)
                 navigate("/internet-shop")
             } else {
                 setMessage('Ошибка регистрации');
