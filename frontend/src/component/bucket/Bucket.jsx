@@ -119,7 +119,7 @@ const Bucket = () => {
             }, 0) : 0}₽
             </h2>
             <button className="clear-button" onClick={handleClearBucket}>Очистить корзину</button>
-            <button className="order-button" onClick={handleOrder}>Заказать</button>
+            <button className="order-button" onClick={handleOrder}>Заказать/Приход</button>
             <button className="comeback-button" onClick={handleComeback}>Назад</button>
         </div>
     );

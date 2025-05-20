@@ -49,7 +49,7 @@ const MainPage = () => {
     return (
         <div className="main-page">
             <header className="header">
-                <h1>Добро пожаловать в мой курсовой проект</h1>
+                <h1>Интернет магазин</h1>
                 <div className="user-info">
                     <span>nickname: {userName}</span>
                     <button onClick={handleLogout} className="exit-button">Выйти</button>

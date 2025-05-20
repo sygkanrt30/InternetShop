@@ -10,7 +10,7 @@ import ru.kubsau.practise.internetshop.services.bucket.BucketService;
 import java.util.Map;
 
 @AllArgsConstructor
-@RestController()
+@RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/buckets")
 public class BucketController {
