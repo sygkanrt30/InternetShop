@@ -23,25 +23,25 @@ public class BucketController {
 
     @PatchMapping("/clear-bucket/{username}")
     public ResponseEntity<String> clearBucket(@PathVariable String username) {
-        bucketService.clearAllProductsInBucket(username);
+        bucketService.clearBucket(username);
         return getOkStatus();
     }
 
     @PatchMapping("/remove-all-products-this-type")
     public ResponseEntity<String> removeAllProductsOfThisTypeFromBucket(@RequestParam String username, @RequestParam long productId) {
-        bucketService.removeAllProductsOfThisTypeFromBucket(username, productId);
+        bucketService.removeAllProductsOfThisType(username, productId);
         return getOkStatus();
     }
 
     @PatchMapping("/remove-product")
     public ResponseEntity<String> removeProductFromBucket(@RequestParam String username, @RequestParam long productId) {
-        bucketService.removeProductFromBucket(username, productId);
+        bucketService.removeProduct(username, productId);
         return getOkStatus();
     }
 
     @PatchMapping("/add-products")
     public ResponseEntity<String> addProductsToBucket(@RequestParam String username, @RequestParam long productId) {
-        bucketService.addProductsToList(username, productId);
+        bucketService.addProductsToBucket(username, productId);
         return getOkStatus();
     }
 

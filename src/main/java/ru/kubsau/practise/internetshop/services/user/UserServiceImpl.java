@@ -1,6 +1,7 @@
 package ru.kubsau.practise.internetshop.services.user;
 
 
+import com.sun.jdi.request.InvalidRequestStateException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.*;
@@ -10,7 +11,6 @@ import ru.kubsau.practise.internetshop.config.UserDetailsImpl;
 import ru.kubsau.practise.internetshop.entities.User;
 import ru.kubsau.practise.internetshop.repositories.UserRepository;
 import ru.kubsau.practise.internetshop.services.bucket.BucketService;
-import ru.kubsau.practise.internetshop.services.exceptions.InvalidRequestException;
 
 @Service
 @AllArgsConstructor
@@ -22,18 +22,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void save(User user) {
-        UserValidator userValidator = new UserValidator();
-        userValidator.validate(user);
+        UserValidator.validate(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         tryToSaveUser(user);
     }
 
     private void tryToSaveUser(User user) {
         try {
-            bucketService.createBucket(user.getUsername());
+            bucketService.create(user.getUsername());
             userRepository.save(user);
         } catch (Exception e) {
-            throw new InvalidRequestException(e.getMessage());
+            throw new InvalidRequestStateException(e.getMessage());
         }
     }
 

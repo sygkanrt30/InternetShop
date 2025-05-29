@@ -6,9 +6,10 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
 
-
+@SuppressWarnings("All")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {

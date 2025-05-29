@@ -13,7 +13,7 @@ public interface BucketRepository extends JpaRepository<Bucket, String> {
 
     @Query(value = "select list_of_products from bucket where username = trim(:username)",
             nativeQuery = true)
-    String getListOfProducts(String username);
+    String getIdsInString(String username);
 
     @Query(value = "select * from bucket where username = trim(:username)",
             nativeQuery = true)

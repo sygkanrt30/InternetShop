@@ -1,5 +1,6 @@
 package ru.kubsau.practise.internetshop.controllers;
 
+import com.sun.jdi.request.InvalidRequestStateException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -7,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import ru.kubsau.practise.internetshop.services.exceptions.InvalidRequestException;
 
 @ControllerAdvice
 @Slf4j
@@ -16,7 +16,7 @@ public class GlobalExceptionController {
     static String DETAILS_WORD = "Подробности:";
 
     @ExceptionHandler
-    public ResponseEntity<String> catchInvalidRequestException(InvalidRequestException e) {
+    public ResponseEntity<String> catchInvalidRequestException(InvalidRequestStateException e) {
         return getAppErrorHandlerResponseEntity(e, HttpStatus.NOT_ACCEPTABLE);
     }
 

@@ -7,13 +7,13 @@ import java.util.Map;
 public interface BucketService {
     Map<Product, Long> getProductsInBucket(String username);
 
-    void clearAllProductsInBucket(String username);
+    void clearBucket(String username);
 
-    void removeAllProductsOfThisTypeFromBucket(String username, long productId);
+    void removeAllProductsOfThisType(String username, long productId);
 
-    void removeProductFromBucket(String username, long productId);
+    void removeProduct(String username, long productId);
 
-    void createBucket(String username);
+    void create(String username);
 
-    void addProductsToList(String username, long productId);
+    void addProductsToBucket(String username, long productId);
 }

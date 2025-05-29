@@ -21,15 +21,15 @@ public class BucketServiceImpl implements BucketService {
 
     @Override
     public Map<Product, Long> getProductsInBucket(String username) {
-        String stringOfIds = bucketRepository.getListOfProducts(username);
+        String stringOfIds = bucketRepository.getIdsInString(username);
         String[] listOfIds = stringOfIds.isEmpty() ? new String[0] : stringOfIds.split(",");
-        return convertArrWithIdToMapWithProduct(listOfIds);
+        return convertToProductMap(listOfIds);
     }
 
-    private Map<Product, Long> convertArrWithIdToMapWithProduct(String[] productIds) {
+    private Map<Product, Long> convertToProductMap(String[] productIds) {
         Map<Product, Long> products = new HashMap<>();
         for (String productId : productIds) {
-            var product = productService.getProductById(Long.parseLong(productId));
+            var product = productService.getById(Long.parseLong(productId));
             putProductInMap(products, product);
         }
         return products;
@@ -45,7 +45,7 @@ public class BucketServiceImpl implements BucketService {
 
     @Transactional
     @Override
-    public void clearAllProductsInBucket(String username) {
+    public void clearBucket(String username) {
         getBucketOrThrowException(username);
         long[] emptyArray = new long[0];
         bucketRepository.updateListOfProductsInBucket(username, emptyArray);
@@ -60,7 +60,7 @@ public class BucketServiceImpl implements BucketService {
 
     @Transactional
     @Override
-    public void removeAllProductsOfThisTypeFromBucket(String username, long productId) {
+    public void removeAllProductsOfThisType(String username, long productId) {
         Bucket bucket = getBucketOrThrowException(username);
         long[] arr = bucket.getProductIds();
         long[] arrWithoutRemoteId = Arrays.stream(arr)
@@ -72,7 +72,7 @@ public class BucketServiceImpl implements BucketService {
 
     @Transactional
     @Override
-    public void removeProductFromBucket(String username, long productId) {
+    public void removeProduct(String username, long productId) {
         Bucket bucket = getBucketOrThrowException(username);
         long[] arr = bucket.getProductIds();
         long[] arrWithoutRemoteId = deleteOneIdFromArray(arr, productId);
@@ -94,13 +94,13 @@ public class BucketServiceImpl implements BucketService {
     }
 
     @Override
-    public void createBucket(String username) {
+    public void create(String username) {
         bucketRepository.saveBucket(username);
     }
 
     @Transactional
     @Override
-    public void addProductsToList(String username, long productId) {
+    public void addProductsToBucket(String username, long productId) {
         Bucket bucket = getBucketOrThrowException(username);
         long[] oneIdArr = new long[]{productId};
         long[] arrayOfProductIds = addIdsToArray(bucket.getProductIds(), oneIdArr);

@@ -73,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
 
     private void removeGarbageDataInOtherTables(String username, Map<Product, Long> map) {
         removeProductsFromDB(map);
-        bucketService.clearAllProductsInBucket(username);
+        bucketService.clearBucket(username);
     }
 
     private void removeProductsFromDB(Map<Product, Long> map) {
