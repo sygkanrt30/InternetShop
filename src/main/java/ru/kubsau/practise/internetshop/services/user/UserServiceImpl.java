@@ -4,13 +4,16 @@ package ru.kubsau.practise.internetshop.services.user;
 import com.sun.jdi.request.InvalidRequestStateException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.*;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.kubsau.practise.internetshop.config.UserDetailsImpl;
-import ru.kubsau.practise.internetshop.entities.User;
+import ru.kubsau.practise.internetshop.security.UserDetailsImpl;
+import ru.kubsau.practise.internetshop.model.entities.User;
 import ru.kubsau.practise.internetshop.repositories.UserRepository;
 import ru.kubsau.practise.internetshop.services.bucket.BucketService;
+import ru.kubsau.practise.internetshop.services.user.enums.UserRole;
 
 @Service
 @AllArgsConstructor
@@ -23,6 +26,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public void save(User user) {
         UserValidator.validate(user);
+        user.setRole(UserRole.USER.name());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         tryToSaveUser(user);
     }
@@ -37,19 +41,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        User user = getUserOrElseThrow(username);
-        return new UserDetailsImpl(user);
-    }
-
-    private User getUserOrElseThrow(String username) {
+    public UserDetails loadUserByUsername(String username){
         return userRepository.findByUsername(username)
+                .map(UserDetailsImpl::new)
                 .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
-    }
-
-    @Override
-    public boolean isRegistered(String username, String password) {
-        User userForUsername = getUserOrElseThrow(username);
-        return passwordEncoder.matches(password, userForUsername.getPassword());
     }
 }

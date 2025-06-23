@@ -9,49 +9,27 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.kubsau.practise.internetshop.entities.Bucket;
-import ru.kubsau.practise.internetshop.entities.Product;
+import ru.kubsau.practise.internetshop.model.entities.Bucket;
+import ru.kubsau.practise.internetshop.model.entities.Product;
 import ru.kubsau.practise.internetshop.repositories.BucketRepository;
 import ru.kubsau.practise.internetshop.services.bucket.BucketServiceImpl;
 import ru.kubsau.practise.internetshop.services.product.ProductService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class BucketServiceImplTest {
     @Mock
-    BucketRepository bucketRepository;
+    private BucketRepository bucketRepository;
     @Mock
-    ProductService productService;
+    private ProductService productService;
+    @Mock
+    private Bucket bucket;
     @InjectMocks
-    BucketServiceImpl bucketServiceImpl;
-
-    @Test
-    @DisplayName("1 getProductsInBucket(username) на формирование мапы")
-    public void getProductsInBucket1() {
-        var product1 = new Product(2L, "milk", true, 100, 1, "It is a milk");
-        var product2 = new Product(3L, "cake", false, 100, 1, "It is a cake");
-        var product3 = new Product(4L, "eggs", true, 100, 1, "It is a eggs");
-        var productsInBucket = new HashMap<>(Map.of(
-                product1, 3L,
-                product2, 1L,
-                product3, 3L
-        ));
-        Mockito.when(bucketRepository.getIdsInString(Mockito.anyString())).thenReturn("2,2,2,4,3,4,4");
-        Mockito.when(productService.getById(2L)).thenReturn(product1);
-        Mockito.when(productService.getById(3L)).thenReturn(product2);
-        Mockito.when(productService.getById(4L)).thenReturn(product3);
-
-        Map<Product, Long> result = bucketServiceImpl.getProductsInBucket("username");
-
-        Assertions.assertDoesNotThrow(() -> bucketServiceImpl.getProductsInBucket("username"));
-        Assertions.assertEquals(productsInBucket.get(product1), result.get(product1));
-        Assertions.assertEquals(productsInBucket.size(), result.size());
-        Assertions.assertEquals(productsInBucket, result);
-        Assertions.assertTrue(result.containsKey(product2));
-    }
+    private BucketServiceImpl bucketServiceImpl;
 
     @Test
     @DisplayName("2 getProductsInBucket(username) на формирование мапы")
@@ -60,12 +38,13 @@ public class BucketServiceImplTest {
         var productsInBucket = new HashMap<>(Map.of(
                 product1, 1L
         ));
-        Mockito.when(bucketRepository.getIdsInString(Mockito.anyString())).thenReturn("2");
-        Mockito.when(productService.getById(2L)).thenReturn(product1);
+       Mockito.when(bucket.getProductIds()).thenReturn(new long[]{2L});
+        Mockito.when(productService.getAllProductsAccordingToIds(List.of(2L))).thenReturn(List.of(product1));
+        Mockito.when(bucketRepository.findByUsername(Mockito.anyString())).thenReturn(Optional.of(bucket));
 
-        Map<Product, Long> result = bucketServiceImpl.getProductsInBucket("username");
+        Map<Product, Long> result = bucketServiceImpl.getBucket("username");
 
-        Assertions.assertDoesNotThrow(() -> bucketServiceImpl.getProductsInBucket("username"));
+        Assertions.assertDoesNotThrow(() -> bucketServiceImpl.getBucket("username"));
         Assertions.assertEquals(productsInBucket.get(product1), result.get(product1));
         Assertions.assertEquals(productsInBucket.size(), result.size());
         Assertions.assertEquals(productsInBucket, result);
@@ -75,21 +54,14 @@ public class BucketServiceImplTest {
     @DisplayName("3 getProductsInBucket(username) на формирование мапы")
     public void getProductsInBucket3() {
         var productsInBucket = new HashMap<>();
-        Mockito.when(bucketRepository.getIdsInString(Mockito.anyString())).thenReturn("");
+        Mockito.when(bucketRepository.findByUsername(Mockito.anyString())).thenReturn(Optional.of(bucket));
+        Mockito.when(bucket.getProductIds()).thenReturn(new long[0]);
 
-        Map<Product, Long> result = bucketServiceImpl.getProductsInBucket("username");
+        Map<Product, Long> result = bucketServiceImpl.getBucket("username");
 
-        Assertions.assertDoesNotThrow(() -> bucketServiceImpl.getProductsInBucket("username"));
+        Assertions.assertDoesNotThrow(() -> bucketServiceImpl.getBucket("username"));
         Assertions.assertEquals(0, result.size());
         Assertions.assertEquals(productsInBucket, result);
-    }
-
-    @Test
-    @DisplayName("getProductsInBucket(username) выброс ошибки из-за некорректного id")
-    public void getProductsInBucket_InvalidId() {
-        Mockito.when(bucketRepository.getIdsInString(Mockito.anyString())).thenReturn("w,1,2,3");
-
-        Assertions.assertThrows(NumberFormatException.class, () -> bucketServiceImpl.getProductsInBucket("username"));
     }
 
     @Test
@@ -97,20 +69,12 @@ public class BucketServiceImplTest {
     public void clearBucket_CorrectCase() {
         long[] emptyArray = new long[0];
         Mockito.doThrow(new RuntimeException("Forced exception for testing"))
-                .when(bucketRepository).updateListOfProductsInBucket(Mockito.anyString(), Mockito.eq(emptyArray));
+                .when(bucketRepository).updateBucket(Mockito.anyString(), Mockito.eq(emptyArray));
 
         var exception = Assertions.assertThrows(RuntimeException.class,
-                () -> bucketRepository.updateListOfProductsInBucket("someString", emptyArray));
+                () -> bucketRepository.updateBucket("someString", emptyArray));
 
         Assertions.assertEquals("Forced exception for testing", exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("clearBucket(String username) выброс ошибки из-за некорректного username")
-    public void clearBucket_InvalidUsername() {
-        Mockito.when(bucketRepository.getBucket(Mockito.anyString())).thenReturn(Optional.empty());
-
-        Assertions.assertThrows(InvalidRequestStateException.class, () -> bucketServiceImpl.clearBucket("username"));
     }
 
     @Test
@@ -118,10 +82,10 @@ public class BucketServiceImplTest {
     public void removeAllProductsOfThisType_CorrectCase() {
         long[] arr = {1L, 2L, 3L, 3L, 2L, 2L};
         long[] filteredArr = {1L, 2L, 2L, 2L};
-        Mockito.when(bucketRepository.getBucket(Mockito.anyString()))
+        Mockito.when(bucketRepository.findByUsername(Mockito.anyString()))
                 .thenReturn(Optional.of(new Bucket("username", arr)));
         Mockito.doThrow(new RuntimeException("Forced exception for testing"))
-                .when(bucketRepository).updateListOfProductsInBucket(Mockito.anyString(), Mockito.eq(filteredArr));
+                .when(bucketRepository).updateBucket(Mockito.anyString(), Mockito.eq(filteredArr));
 
         Assertions.assertThrows(RuntimeException.class,
                 () -> bucketServiceImpl.removeAllProductsOfThisType("username", 3L));
@@ -132,10 +96,10 @@ public class BucketServiceImplTest {
     public void removeAllProductsOfThisType_CorrectCase2() {
         long[] arr = {2L, 2L, 2L, 2L, 2L, 2L};
         long[] emptyArray = new long[0];
-        Mockito.when(bucketRepository.getBucket(Mockito.anyString()))
+        Mockito.when(bucketRepository.findByUsername(Mockito.anyString()))
                 .thenReturn(Optional.of(new Bucket("username", arr)));
         Mockito.doThrow(new RuntimeException("Forced exception for testing"))
-                .when(bucketRepository).updateListOfProductsInBucket(Mockito.anyString(), Mockito.eq(emptyArray));
+                .when(bucketRepository).updateBucket(Mockito.anyString(), Mockito.eq(emptyArray));
 
         Assertions.assertThrows(RuntimeException.class,
                 () -> bucketServiceImpl.removeAllProductsOfThisType("username", 3L));
@@ -145,10 +109,10 @@ public class BucketServiceImplTest {
     @DisplayName("removeAllProductsOfThisType(username, productId) указаного id нет в списке")
     public void removeAllProductsOfThisType_IdNotInBucket() {
         long[] arr = {1L, 2L, 3L, 3L, 2L, 2L};
-        Mockito.when(bucketRepository.getBucket(Mockito.anyString()))
+        Mockito.when(bucketRepository.findByUsername(Mockito.anyString()))
                 .thenReturn(Optional.of(new Bucket("username", arr)));
         Mockito.doThrow(new RuntimeException("Forced exception for testing"))
-                .when(bucketRepository).updateListOfProductsInBucket(Mockito.anyString(), Mockito.eq(arr));
+                .when(bucketRepository).updateBucket(Mockito.anyString(), Mockito.eq(arr));
 
         Assertions.assertThrows(RuntimeException.class,
                 () -> bucketServiceImpl.removeAllProductsOfThisType("username", 7L));
@@ -157,7 +121,7 @@ public class BucketServiceImplTest {
     @Test
     @DisplayName("removeAllProductsOfThisType(username, productId) нет корзины с таким владельцем")
     public void removeAllProductsOfThisType_InvalidUsername() {
-        Mockito.when(bucketRepository.getBucket("username"))
+        Mockito.when(bucketRepository.findByUsername("username"))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThrows(InvalidRequestStateException.class,
@@ -169,10 +133,10 @@ public class BucketServiceImplTest {
     public void removeProduct_CorrectCase() {
         long[] arr = {1L, 2L, 3L, 3L, 2L, 2L};
         long[] filteredArr = {1L, 2L, 3L, 2L, 2L};
-        Mockito.when(bucketRepository.getBucket(Mockito.anyString()))
+        Mockito.when(bucketRepository.findByUsername(Mockito.anyString()))
                 .thenReturn(Optional.of(new Bucket("username", arr)));
         Mockito.doThrow(new RuntimeException("Forced exception for testing"))
-                .when(bucketRepository).updateListOfProductsInBucket(Mockito.anyString(), Mockito.eq(filteredArr));
+                .when(bucketRepository).updateBucket(Mockito.anyString(), Mockito.eq(filteredArr));
 
         Assertions.assertThrows(RuntimeException.class,
                 () -> bucketServiceImpl.removeAllProductsOfThisType("username", 3L));
@@ -183,10 +147,10 @@ public class BucketServiceImplTest {
     public void removeProduct_CorrectCase2() {
         long[] arr = {2L};
         long[] emptyArray = new long[0];
-        Mockito.when(bucketRepository.getBucket(Mockito.anyString()))
+        Mockito.when(bucketRepository.findByUsername(Mockito.anyString()))
                 .thenReturn(Optional.of(new Bucket("username", arr)));
         Mockito.doThrow(new RuntimeException("Forced exception for testing"))
-                .when(bucketRepository).updateListOfProductsInBucket(Mockito.anyString(), Mockito.eq(emptyArray));
+                .when(bucketRepository).updateBucket(Mockito.anyString(), Mockito.eq(emptyArray));
 
         Assertions.assertThrows(RuntimeException.class,
                 () -> bucketServiceImpl.removeAllProductsOfThisType("username", 3L));
@@ -196,10 +160,10 @@ public class BucketServiceImplTest {
     @DisplayName("removeProduct(username, productId) указаного id нет в списке")
     public void removeProduct_IdNotInBucket() {
         long[] arr = {1L, 2L, 3L, 3L, 2L, 2L};
-        Mockito.when(bucketRepository.getBucket(Mockito.anyString()))
+        Mockito.when(bucketRepository.findByUsername(Mockito.anyString()))
                 .thenReturn(Optional.of(new Bucket("username", arr)));
         Mockito.doThrow(new RuntimeException("Forced exception for testing"))
-                .when(bucketRepository).updateListOfProductsInBucket(Mockito.anyString(), Mockito.eq(arr));
+                .when(bucketRepository).updateBucket(Mockito.anyString(), Mockito.eq(arr));
 
         Assertions.assertThrows(RuntimeException.class,
                 () -> bucketServiceImpl.removeAllProductsOfThisType("username", 7L));
@@ -208,7 +172,7 @@ public class BucketServiceImplTest {
     @Test
     @DisplayName("removeProduct(username, productId) нет корзины с таким владельцем")
     public void removeProduct_InvalidUsername() {
-        Mockito.when(bucketRepository.getBucket("username"))
+        Mockito.when(bucketRepository.findByUsername("username"))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThrows(InvalidRequestStateException.class,
@@ -220,10 +184,10 @@ public class BucketServiceImplTest {
     public void addProductsToBucket_CorrectCase() {
         long[] arr = {1L, 2L, 3L, 3L, 2L, 2L};
         long[] newArr = {1L, 2L, 3L, 3L, 2L, 2L, 3L};
-        Mockito.when(bucketRepository.getBucket(Mockito.anyString()))
+        Mockito.when(bucketRepository.findByUsername(Mockito.anyString()))
                 .thenReturn(Optional.of(new Bucket("username", arr)));
         Mockito.doThrow(new RuntimeException("Forced exception for testing"))
-                .when(bucketRepository).updateListOfProductsInBucket(Mockito.anyString(), Mockito.eq(newArr));
+                .when(bucketRepository).updateBucket(Mockito.anyString(), Mockito.eq(newArr));
 
         Assertions.assertThrows(RuntimeException.class,
                 () -> bucketServiceImpl.removeAllProductsOfThisType("username", 3L));
@@ -232,7 +196,7 @@ public class BucketServiceImplTest {
     @Test
     @DisplayName("addProductsToBucket(username, productId) нет корзины с таким владельцем")
     public void addProductsToBucket_InvalidUsername() {
-        Mockito.when(bucketRepository.getBucket("username"))
+        Mockito.when(bucketRepository.findByUsername("username"))
                 .thenReturn(Optional.empty());
 
         Assertions.assertThrows(InvalidRequestStateException.class,

@@ -1,4 +1,4 @@
-package ru.kubsau.practise.internetshop.services.user;
+package ru.kubsau.practise.internetshop.services.user.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package ru.kubsau.practise.internetshop.entities;
+package ru.kubsau.practise.internetshop.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,8 +6,9 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
 
-@SuppressWarnings("All")
-@Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -15,22 +16,19 @@ import java.util.Objects;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
     Long id;
 
     @Column(nullable = false, length = 50, unique = true)
     String name;
 
-    @Column(name = "is_available", nullable = false)
+    @Column(name = "is_available")
     boolean isAvailable;
 
-    @Column(nullable = false)
     int count;
 
-    @Column(nullable = false)
     int price;
 
-    @Column(length = Integer.MAX_VALUE)
+    @Column(length = 1000)
     String description;
 
     @Override
