@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private void tryToSaveUser(User user) {
         try {
-            bucketService.create(user.getUsername());
+            bucketService.create(user.getBucketOwner());
             userRepository.save(user);
         } catch (Exception e) {
             throw new InvalidRequestStateException(e.getMessage());

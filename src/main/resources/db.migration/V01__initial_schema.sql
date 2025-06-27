@@ -24,7 +24,7 @@ create table users
     email varchar(100) not null
         constraint users_uk unique,
     password varchar(255) not null,
-    role varchar(20) default 'USER'::character varying,
+    role varchar(20),
     bucketowner varchar(255) not null
         constraint users_bucket_username_fk
             references bucket

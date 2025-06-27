@@ -13,10 +13,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "users")
 public class User {
     @Id
-    @Column(length = 50, unique = true)
+    @Column(length = 100)
     String username;
 
     @Column(nullable = false, length = 100, unique = true)
@@ -28,8 +29,8 @@ public class User {
     @Column(length = 20)
     String role;
 
-    @OneToOne
-    @PrimaryKeyJoinColumn(name = "bucketowner")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "bucketowner")
     Bucket bucketOwner;
 
     @Override

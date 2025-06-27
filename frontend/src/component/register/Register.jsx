@@ -19,9 +19,6 @@ const Register = () => {
             username,
             email,
             password,
-            bucketOwner: {
-                username: username
-            }
         };
 
         try {

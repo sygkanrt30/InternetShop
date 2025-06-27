@@ -1,5 +1,6 @@
 package ru.kubsau.practise.internetshop.services.bucket;
 
+import ru.kubsau.practise.internetshop.model.entities.Bucket;
 import ru.kubsau.practise.internetshop.model.entities.Product;
 
 import java.util.Map;
@@ -13,7 +14,7 @@ public interface BucketService {
 
     void removeProduct(String username, long productId);
 
-    void create(String username);
+    void create(Bucket bucket);
 
     void addProducts(String username, long productId);
 }

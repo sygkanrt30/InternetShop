@@ -85,8 +85,8 @@ public class BucketServiceImpl implements BucketService {
 
     @Transactional
     @Override
-    public void create(String username) {
-        bucketRepository.save(new Bucket(username));
+    public void create(Bucket bucket) {
+        bucketRepository.save(bucket);
     }
 
     @Transactional

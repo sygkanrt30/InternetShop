@@ -1,6 +1,5 @@
 package ru.kubsau.practise.internetshop.model.dto.mapper;
 
-
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 import ru.kubsau.practise.internetshop.model.dto.UserDTO;
@@ -11,11 +10,12 @@ import ru.kubsau.practise.internetshop.model.entities.User;
 @Component
 public interface UserMapper {
     default User fromDto(UserDTO userDTO) {
-        User user = new User();
-        user.setUsername(userDTO.username());
-        user.setPassword(userDTO.password());
-        user.setEmail(userDTO.email());
-        user.setBucketOwner(new Bucket(userDTO.username()));
-        return user;
+        String username = userDTO.username();
+        return User.builder()
+                .username(username)
+                .email(userDTO.email())
+                .password(userDTO.password())
+                .bucketOwner(new Bucket(username, new long[0]))
+                .build();
     }
 }

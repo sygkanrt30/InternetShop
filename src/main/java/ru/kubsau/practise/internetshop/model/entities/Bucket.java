@@ -6,7 +6,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
-import org.springframework.lang.NonNull;
 
 import java.util.Objects;
 
@@ -23,10 +22,6 @@ public class Bucket {
 
     @Column(name = "list_of_products")
     long[] productIds;
-
-    public Bucket(@NonNull String username) {
-        this.username = username;
-    }
 
     @Override
     public final boolean equals(Object o) {
