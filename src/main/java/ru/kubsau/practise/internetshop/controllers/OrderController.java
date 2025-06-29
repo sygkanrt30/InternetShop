@@ -1,23 +1,23 @@
 package ru.kubsau.practise.internetshop.controllers;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import ru.kubsau.practise.internetshop.util.AuthenticationContext;
+import ru.kubsau.practise.internetshop.model.dto.ResponseDTO;
 import ru.kubsau.practise.internetshop.services.order.OrderService;
-
+import ru.kubsau.practise.internetshop.model.dto.ResponseDTOCreator;
 
 @RestController
-@RequestMapping("/order")
-@CrossOrigin(origins = "http://localhost:3000")
 @AllArgsConstructor
 public class OrderController {
     OrderService orderService;
 
-    @PostMapping(path = "/create-order/{username}")
-    public ResponseEntity<String> createOrder(@PathVariable String username) {
-        orderService.createOrder(username);
-        return ResponseEntity.ok()
-                .body("{\"message\":\"" + HttpStatus.OK.getReasonPhrase() + "\"}");
+    @PostMapping("/order/create-order")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseDTO createOrder() {
+        String currentUsername = AuthenticationContext.getCurrentUsername();
+        orderService.createOrder(currentUsername);
+        return ResponseDTOCreator.getResponseOK();
     }
 }

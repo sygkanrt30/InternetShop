@@ -14,4 +14,5 @@ target/
 .mvn
 logs
 src/main/resources/orders
+src/main/resources/META-INF
 

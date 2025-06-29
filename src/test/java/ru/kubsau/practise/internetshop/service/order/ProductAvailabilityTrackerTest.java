@@ -7,17 +7,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.kubsau.practise.internetshop.entities.Product;
+import ru.kubsau.practise.internetshop.model.entities.Product;
 import ru.kubsau.practise.internetshop.repositories.ProductRepository;
 import ru.kubsau.practise.internetshop.services.order.ProductAvailabilityTracker;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductAvailabilityTrackerTest {
     @Mock
-    @SuppressWarnings("UnusedDeclaration")
-    ProductRepository productRepository;
+    @SuppressWarnings("unused")
+    private ProductRepository productRepository;
     @InjectMocks
-    ProductAvailabilityTracker productAvailabilityTracker;
+    private ProductAvailabilityTracker productAvailabilityTracker;
 
     @Test
     @DisplayName("Тест на не выброс exception в decrementProductCount")
@@ -25,7 +25,7 @@ public class ProductAvailabilityTrackerTest {
         var product = new Product(1L, "milk", true, 1, 1, "It is a milk");
         long amountDecrement = 1;
 
-        Assertions.assertDoesNotThrow(() -> productAvailabilityTracker.decrementProductCount(product, amountDecrement));
+        Assertions.assertDoesNotThrow(() -> productAvailabilityTracker.decrementCount(product, amountDecrement));
     }
 
     @Test
@@ -35,6 +35,6 @@ public class ProductAvailabilityTrackerTest {
         long amountDecrement = 30;
 
         Assertions.assertThrows(IllegalStateException.class,
-                () -> productAvailabilityTracker.decrementProductCount(product, amountDecrement));
+                () -> productAvailabilityTracker.decrementCount(product, amountDecrement));
     }
 }

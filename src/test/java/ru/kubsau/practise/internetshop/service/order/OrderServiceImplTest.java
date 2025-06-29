@@ -8,8 +8,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.kubsau.practise.internetshop.entities.Product;
+import ru.kubsau.practise.internetshop.model.entities.Product;
 import ru.kubsau.practise.internetshop.services.bucket.BucketServiceImpl;
+import ru.kubsau.practise.internetshop.services.order.ExcelFileCreator;
 import ru.kubsau.practise.internetshop.services.order.OrderServiceImpl;
 import ru.kubsau.practise.internetshop.services.order.ProductAvailabilityTracker;
 
@@ -21,17 +22,20 @@ import java.util.Map;
 public class OrderServiceImplTest {
     @Mock
     @SuppressWarnings("UnusedDeclaration")
-    ProductAvailabilityTracker productAvailabilityTracker;
+    private ProductAvailabilityTracker productAvailabilityTracker;
     @Mock
-    BucketServiceImpl bucketService;
+    private BucketServiceImpl bucketService;
+    @SuppressWarnings("unused")
+    @Mock
+    private ExcelFileCreator excelFileCreator;
     @InjectMocks
-    OrderServiceImpl orderService;
+    private OrderServiceImpl orderService;
 
     @Test
     @DisplayName("Тест на выброс ошибки из-за пустой мапы")
     public void createOrderTest_ThrowException() {
         String username = "test";
-        Mockito.when(bucketService.getProductsInBucket("test")).thenReturn(new HashMap<>());
+        Mockito.when(bucketService.getBucket("test")).thenReturn(new HashMap<>());
 
         Assertions.assertThrows(IllegalStateException.class, () -> orderService.createOrder(username));
     }
@@ -47,7 +51,7 @@ public class OrderServiceImplTest {
         ));
         String username = "test";
         var fullPath = String.format("%s%s%s", "src/main/resources/orders/order_", username, ".xlsx");
-        Mockito.when(bucketService.getProductsInBucket("test")).thenReturn(products);
+        Mockito.when(bucketService.getBucket("test")).thenReturn(products);
 
         orderService.createOrder(username);
 

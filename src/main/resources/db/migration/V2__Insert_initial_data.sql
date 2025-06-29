@@ -1,0 +1,15 @@
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (11, 'соль', true, 100, 69, 'Соль поваренная');
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (21, 'леденец', true, 200, 39, 'Леденец клубничный');
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (22, 'мороженое', true, 70, 109, 'Мороженое крем-брюле');
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (23, 'чай', true, 80, 130, 'Пачка(30 пакетиков) черного чая');
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (12, 'сметана', true, 70, 109, 'Сметана 20%');
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (17, 'кефир', true, 90, 89, 'Кефир 2.5%');
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (15, 'кетчуп', true, 90, 129, 'Кетчуп томатный');
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (18, 'печенье', true, 100, 199, 'Пачка печенья топленое молоко');
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (19, 'зефир', true, 100, 109, 'Зефир Ванильный');
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (16, 'вода', true, 100, 49, 'Бутылка 0.5л негазированной воды');
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (20, 'кофе', true, 100, 15, 'Кофе растворимый 3в1');
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (10, 'хлеб', true, 100, 49, 'Батон летний, нарезной');
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (1, 'молоко', true, 100, 99, 'Молоко 2.7%');
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (13, 'жевательная резина', true, 100, 35, 'Жевательная резина со вкусом лесных ягод');
+INSERT INTO public.product (id, name, is_available, count, price, description) VALUES (14, 'сахар', true, 100, 149, 'Сахар тростниковый');

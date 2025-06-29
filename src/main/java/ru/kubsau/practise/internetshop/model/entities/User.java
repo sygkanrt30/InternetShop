@@ -1,4 +1,4 @@
-package ru.kubsau.practise.internetshop.entities;
+package ru.kubsau.practise.internetshop.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,18 +6,21 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
 
-@SuppressWarnings("All")
-@Data
+
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "users")
 public class User {
     @Id
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     String username;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, unique = true)
     String email;
 
     @Column(nullable = false)
@@ -26,8 +29,8 @@ public class User {
     @Column(length = 20)
     String role;
 
-    @OneToOne
-    @JoinColumn(name = "bucketowner", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "bucketowner")
     Bucket bucketOwner;
 
     @Override

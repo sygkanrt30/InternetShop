@@ -1,21 +1,25 @@
 package ru.kubsau.practise.internetshop.controllers;
 
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import ru.kubsau.practise.internetshop.entities.Product;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import ru.kubsau.practise.internetshop.model.dto.ProductDTO;
 import ru.kubsau.practise.internetshop.services.product.ProductService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
 public class ProductController {
     ProductService productService;
 
-    @GetMapping
-    public List<Product> getAll() {
-        return productService.getAllProducts();
+    @GetMapping("/products")
+    @PreAuthorize("isAuthenticated()")
+    public List<ProductDTO> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "15") int size) {
+        return productService.getAll(page, size);
     }
 }

@@ -1,17 +1,18 @@
-package ru.kubsau.practise.internetshop.config;
+package ru.kubsau.practise.internetshop.security;
 
 import lombok.AllArgsConstructor;
+import lombok.experimental.NonFinal;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.kubsau.practise.internetshop.entities.User;
+import ru.kubsau.practise.internetshop.model.entities.User;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
-    User user;
+    @NonFinal User user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

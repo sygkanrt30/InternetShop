@@ -5,6 +5,7 @@ import {useAuth} from '../security/AuthContext';
 
 const Authorization = () => {
     const [username, setUsername] = useState('');
+    const LOGIN_URL = 'http://localhost:8080/auth/login';
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
@@ -14,12 +15,9 @@ const Authorization = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:8080/auth/login', {
+            const response = await fetch(LOGIN_URL+ `?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({username, password}),
+                credentials: 'include'
             });
 
             const data = await response.json();
