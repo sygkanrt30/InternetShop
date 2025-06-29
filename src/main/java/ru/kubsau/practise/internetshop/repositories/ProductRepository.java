@@ -8,12 +8,11 @@ import ru.kubsau.practise.internetshop.model.entities.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepositoryImplementation<Product, Long> {
-
-    @Query(value = "update product set count = :newCount where id = :id", nativeQuery = true)
     @Modifying
+    @Query("UPDATE Product p SET p.count = :newCount WHERE p.id = :id")
     void updateCount(long id, long newCount);
 
-    @Query(value = "update product set is_available = false where id = :id", nativeQuery = true)
     @Modifying
+    @Query("UPDATE Product p SET p.isAvailable = false WHERE p.id = :id")
     void makeAvailableFalse(long id);
 }

@@ -13,7 +13,7 @@ public interface BucketRepository extends JpaRepository<Bucket, String> {
 
     Optional<Bucket> findByUsername(String username);
 
-    @Query(value = "update bucket set list_of_products = :newArray where username = trim(:username)", nativeQuery = true)
+    @Query("UPDATE Bucket b SET b.productIds = :newArray WHERE TRIM(b.username) = TRIM(:username)")
     @Modifying
     void updateBucket(String username, long[] newArray);
 }
