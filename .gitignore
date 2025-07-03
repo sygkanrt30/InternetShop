@@ -13,6 +13,6 @@ target/
 .idea
 .mvn
 logs
-src/main/resources/orders
+orders
 src/main/resources/META-INF
 

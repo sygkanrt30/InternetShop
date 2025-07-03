@@ -1,5 +1,7 @@
 package ru.kubsau.practise.internetshop.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
@@ -15,4 +17,6 @@ public interface ProductRepository extends JpaRepositoryImplementation<Product, 
     @Modifying
     @Query("UPDATE Product p SET p.isAvailable = false WHERE p.id = :id")
     void makeAvailableFalse(long id);
+
+    <T> Page<T> findAllBy(Class<T> type, Pageable pageable);
 }

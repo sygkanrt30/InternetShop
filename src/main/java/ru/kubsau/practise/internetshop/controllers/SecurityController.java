@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kubsau.practise.internetshop.model.dto.ResponseDTO;
 import ru.kubsau.practise.internetshop.model.dto.ResponseDTOCreator;
-import ru.kubsau.practise.internetshop.model.dto.UserDTO;
+import ru.kubsau.practise.internetshop.model.dto.UserRequestDTO;
 import ru.kubsau.practise.internetshop.model.dto.mapper.UserMapper;
 import ru.kubsau.practise.internetshop.services.user.UserService;
+
+import javax.validation.Valid;
 
 @RestController
 @AllArgsConstructor
@@ -23,13 +25,13 @@ public class SecurityController {
     AuthenticationManager authenticationManager;
 
     @PostMapping("/auth/register")
-    public ResponseDTO register(@RequestBody UserDTO user, HttpServletRequest request) {
+    public ResponseDTO register(@RequestBody @Valid UserRequestDTO user, HttpServletRequest request) {
         userService.save(userMapper.fromDto(user));
         doAuthentication(user, request);
         return ResponseDTOCreator.getResponseOK();
     }
 
-    private void doAuthentication(UserDTO user, HttpServletRequest request) {
+    private void doAuthentication(UserRequestDTO user, HttpServletRequest request) {
         var authToken = new UsernamePasswordAuthenticationToken(user.username(), user.password());
         var authentication = authenticationManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);

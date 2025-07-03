@@ -3,6 +3,7 @@ package ru.kubsau.practise.internetshop.model.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
+import ru.kubsau.practise.internetshop.services.user.enums.Role;
 
 import java.util.Objects;
 
@@ -26,12 +27,12 @@ public class User {
     @Column(nullable = false)
     String password;
 
-    @Column(length = 20)
-    String role;
+    @Enumerated(EnumType.STRING)
+    Role role;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "bucketowner")
-    Bucket bucketOwner;
+    @JoinColumn(name = "bucket_owner")
+    Bucket bucket;
 
     @Override
     public final boolean equals(Object o) {

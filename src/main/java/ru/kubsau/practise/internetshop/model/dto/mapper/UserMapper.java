@@ -2,20 +2,28 @@ package ru.kubsau.practise.internetshop.model.dto.mapper;
 
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
-import ru.kubsau.practise.internetshop.model.dto.UserDTO;
+import ru.kubsau.practise.internetshop.model.dto.UserRequestDTO;
 import ru.kubsau.practise.internetshop.model.entities.Bucket;
 import ru.kubsau.practise.internetshop.model.entities.User;
+
+import java.util.HashMap;
 
 @Mapper(componentModel = "spring")
 @Component
 public interface UserMapper {
-    default User fromDto(UserDTO userDTO) {
-        String username = userDTO.username();
+    default User fromDto(UserRequestDTO userDTO) {
         return User.builder()
-                .username(username)
+                .username(userDTO.username())
                 .email(userDTO.email())
                 .password(userDTO.password())
-                .bucketOwner(new Bucket(username, new long[0]))
+                .bucket(createDefaultBucket(userDTO.username()))
+                .build();
+    }
+
+    private Bucket createDefaultBucket(String username) {
+        return Bucket.builder()
+                .username(username)
+                .products(new HashMap<>())
                 .build();
     }
 }

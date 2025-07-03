@@ -10,8 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
-import ru.kubsau.practise.internetshop.model.dto.ProductDTO;
-import ru.kubsau.practise.internetshop.model.dto.mapper.ProductMapper;
+import ru.kubsau.practise.internetshop.model.dto.ProductResponseDTO;
 import ru.kubsau.practise.internetshop.model.entities.Product;
 import ru.kubsau.practise.internetshop.repositories.ProductRepository;
 import ru.kubsau.practise.internetshop.services.product.ProductServiceImpl;
@@ -21,14 +20,12 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
-    private Page<Product> productPage;
-    private List<ProductDTO> sortedProducts;
+    private Page<ProductResponseDTO> productPage;
+    private List<ProductResponseDTO> sortedProducts;
     private List<Product> products;
     private Pageable pageable;
     @Mock
     private ProductRepository productRepository;
-    @Mock
-    private ProductMapper productMapper;
     @InjectMocks
     private ProductServiceImpl productService;
 
@@ -42,29 +39,24 @@ class ProductServiceTest {
                 new Product(5L, "bread", true, 10, 909870, "It is a bread")
         ));
 
-        pageable = PageRequest.of(0, 15, Sort.by(Sort.Direction.DESC, "isAvailable"));
-        productPage = new PageImpl<>(products, pageable, products.size());
-
         sortedProducts = new ArrayList<>(List.of(
-                new ProductDTO(1L, "milk", true, 100, "It is a milk"),
-                new ProductDTO(4L, "eggs", true, 100, "It is a eggs"),
-                new ProductDTO(5L, "bread", true, 10, "It is a bread"),
-                new ProductDTO(2L, "cake", false, 100, "It is a cake"),
-                new ProductDTO(3L, "sugar", false, 312, "It is a sugar")
+                new ProductResponseDTO(1L, "milk", true, 100, 200, "It is a milk"),
+                new ProductResponseDTO(4L, "eggs", true, 100, 200, "It is a eggs"),
+                new ProductResponseDTO(5L, "bread", true, 10, 200, "It is a bread"),
+                new ProductResponseDTO(2L, "cake", false, 100, 200, "It is a cake"),
+                new ProductResponseDTO(3L, "sugar", false, 312, 200, "It is a sugar")
         ));
+
+        pageable = PageRequest.of(0, 15, Sort.by(Sort.Direction.DESC, "isAvailable"));
+        productPage = new PageImpl<>(sortedProducts, pageable, products.size());
     }
 
     @Test
     @DisplayName("Проверяет верный ли список возвращает getAllProducts()")
     void getAllProductsCorrectCase() {
-        Mockito.when(productRepository.findAll(pageable)).thenReturn(productPage);
-        Mockito.when(productMapper.toDto(products.get(0))).thenReturn(sortedProducts.get(0));
-        Mockito.when(productMapper.toDto(products.get(1))).thenReturn(sortedProducts.get(1));
-        Mockito.when(productMapper.toDto(products.get(2))).thenReturn(sortedProducts.get(2));
-        Mockito.when(productMapper.toDto(products.get(3))).thenReturn(sortedProducts.get(3));
-        Mockito.when(productMapper.toDto(products.get(4))).thenReturn(sortedProducts.get(4));
+        Mockito.when(productRepository.findAllBy(ProductResponseDTO.class, pageable)).thenReturn(productPage);
 
-        List<ProductDTO> result = productService.getAll(0, 15);
+        List<ProductResponseDTO> result = productService.getAll(0, 15);
 
         Assertions.assertEquals(products.size(), result.size());
         Assertions.assertEquals(sortedProducts, result);
@@ -73,15 +65,9 @@ class ProductServiceTest {
     @Test
     @DisplayName("Сортируется ли список в getAllProducts()")
     void getAllProductsNotCorrectCase() {
-        Mockito.when(productRepository.findAll(pageable)).thenReturn(productPage);
-        Mockito.when(productMapper.toDto(products.get(0))).thenReturn(sortedProducts.get(0));
-        Mockito.when(productMapper.toDto(products.get(1))).thenReturn(sortedProducts.get(3));
-        Mockito.when(productMapper.toDto(products.get(2))).thenReturn(sortedProducts.get(4));
-        Mockito.when(productMapper.toDto(products.get(3))).thenReturn(sortedProducts.get(1));
-        Mockito.when(productMapper.toDto(products.get(4))).thenReturn(sortedProducts.get(2));
-        Mockito.when(productRepository.findAll(pageable)).thenReturn(productPage);
+        Mockito.when(productRepository.findAllBy(ProductResponseDTO.class, pageable)).thenReturn(productPage);
 
-        List<ProductDTO> result = productService.getAll(0, 15);
+        List<ProductResponseDTO> result = productService.getAll(0, 15);
 
         Assertions.assertEquals(products.size(), result.size());
     }

@@ -10,10 +10,11 @@ import ru.kubsau.practise.internetshop.model.dto.ResponseDTOCreator;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/order/")
 public class OrderController {
     OrderService orderService;
 
-    @PostMapping("/order/create-order")
+    @PostMapping("create-order")
     @PreAuthorize("isAuthenticated()")
     public ResponseDTO createOrder() {
         String currentUsername = AuthenticationContext.getCurrentUsername();

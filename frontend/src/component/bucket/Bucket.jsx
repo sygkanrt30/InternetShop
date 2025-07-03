@@ -6,10 +6,11 @@ import {useAuth} from "../security/AuthContext";
 const Bucket = () => {
     const [products, setProducts] = useState();
     const username = localStorage.getItem("username");
-    const GET_BUCKET_URL = `http://localhost:8080/buckets/get`;
-    const CLEAR_BUCKET_URl = 'http://localhost:8080/buckets/clear-bucket';
-    const REMOVE_PRODUCT_URl = 'http://localhost:8080/buckets/remove-product';
-    const REMOVE_ALL_PRODUCT_THIS_TYPE_URl = 'http://localhost:8080/buckets/remove-all-products-this-type';
+    const PARENT_URL = `http://localhost:8080/buckets/`;
+    const GET_BUCKET_URL = PARENT_URL + `get`;
+    const CLEAR_BUCKET_URl = PARENT_URL + 'clear-bucket';
+    const REMOVE_PRODUCT_URl = PARENT_URL + 'remove-product';
+    const REMOVE_ALL_PRODUCT_THIS_TYPE_URl = PARENT_URL + 'remove-all-products-this-type';
     const CREATE_ORDER_URl = 'http://localhost:8080/order/create-order';
     const [isLoading, setIsLoading] = useState(true);
     const {isAuthenticated} = useAuth();
@@ -97,7 +98,7 @@ const Bucket = () => {
                 ) : (
                     products && Object.entries(products).map(([stringProduct, quantity]) => {
                         const productDetails = stringProduct.split(",");
-                        const productId = productDetails[0].substring(14);
+                        const productId = productDetails[0].substring(22);
                         const productName = productDetails[1].substring(6);
                         const isAvailable = productDetails[2].substring(13);
                         const productPrice = parseInt(productDetails[3].substring(7));

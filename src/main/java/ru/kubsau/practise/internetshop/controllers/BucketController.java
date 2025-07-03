@@ -2,39 +2,29 @@ package ru.kubsau.practise.internetshop.controllers;
 
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import ru.kubsau.practise.internetshop.model.dto.ProductDTO;
+import org.springframework.web.bind.annotation.*;
+import ru.kubsau.practise.internetshop.model.dto.ProductResponseDTO;
 import ru.kubsau.practise.internetshop.model.dto.ResponseDTO;
-import ru.kubsau.practise.internetshop.model.dto.mapper.ProductMapper;
-import ru.kubsau.practise.internetshop.model.entities.Product;
+import ru.kubsau.practise.internetshop.model.dto.ResponseDTOCreator;
 import ru.kubsau.practise.internetshop.services.bucket.BucketService;
 import ru.kubsau.practise.internetshop.util.AuthenticationContext;
-import ru.kubsau.practise.internetshop.model.dto.ResponseDTOCreator;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @AllArgsConstructor
 @RestController
+@RequestMapping("/buckets/")
 public class BucketController {
     BucketService bucketService;
-    ProductMapper productMapper;
 
-    @GetMapping("/buckets/get")
+    @GetMapping("get")
     @PreAuthorize("isAuthenticated()")
-    public Map<ProductDTO, Long> get() {
+    public Map<ProductResponseDTO, Integer> get() {
         String currentUsername = AuthenticationContext.getCurrentUsername();
-        Map<Product, Long> map = bucketService.getBucket(currentUsername);
-        var mapWithDto = new HashMap<ProductDTO, Long>();
-        map.forEach((prod, countInBucket)
-                -> mapWithDto.put(productMapper.toDto(prod), countInBucket));
-        return mapWithDto;
+        return bucketService.getBucket(currentUsername);
     }
 
-    @PatchMapping("/buckets/clear-bucket")
+    @PatchMapping("clear-bucket")
     @PreAuthorize("isAuthenticated()")
     public ResponseDTO clear() {
         String currentUsername = AuthenticationContext.getCurrentUsername();
@@ -42,7 +32,7 @@ public class BucketController {
         return ResponseDTOCreator.getResponseOK();
     }
 
-    @PatchMapping("/buckets/remove-all-products-this-type")
+    @PatchMapping("remove-all-products-this-type")
     @PreAuthorize("isAuthenticated()")
     public ResponseDTO removeAllProductsOfThisType(@RequestParam long productId) {
         String currentUsername = AuthenticationContext.getCurrentUsername();
@@ -50,7 +40,7 @@ public class BucketController {
         return ResponseDTOCreator.getResponseOK();
     }
 
-    @PatchMapping("/buckets/remove-product")
+    @PatchMapping("remove-product")
     @PreAuthorize("isAuthenticated()")
     public ResponseDTO removeProduct(@RequestParam long productId) {
         String currentUsername = AuthenticationContext.getCurrentUsername();
@@ -58,7 +48,7 @@ public class BucketController {
         return ResponseDTOCreator.getResponseOK();
     }
 
-    @PatchMapping("/buckets/add-products")
+    @PatchMapping("add-products")
     @PreAuthorize("isAuthenticated()")
     public ResponseDTO addProducts(@RequestParam long productId) {
         String currentUsername = AuthenticationContext.getCurrentUsername();

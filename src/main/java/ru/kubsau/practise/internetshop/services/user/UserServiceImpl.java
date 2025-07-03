@@ -13,7 +13,7 @@ import ru.kubsau.practise.internetshop.security.UserDetailsImpl;
 import ru.kubsau.practise.internetshop.model.entities.User;
 import ru.kubsau.practise.internetshop.repositories.UserRepository;
 import ru.kubsau.practise.internetshop.services.bucket.BucketService;
-import ru.kubsau.practise.internetshop.services.user.enums.UserRole;
+import ru.kubsau.practise.internetshop.services.user.enums.Role;
 
 @Service
 @AllArgsConstructor
@@ -25,15 +25,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void save(User user) {
-        UserValidator.validate(user);
-        user.setRole(UserRole.USER.name());
+        user.setRole(Role.USER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        tryToSaveUser(user);
-    }
-
-    private void tryToSaveUser(User user) {
         try {
-            bucketService.create(user.getBucketOwner());
+            bucketService.save(user.getBucket());
             userRepository.save(user);
         } catch (Exception e) {
             throw new InvalidRequestStateException(e.getMessage());

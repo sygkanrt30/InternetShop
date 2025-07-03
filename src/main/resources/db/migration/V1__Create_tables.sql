@@ -1,8 +1,7 @@
 create table bucket
 (
     username varchar(255) not null
-        constraint username primary key,
-    list_of_products bigint[] default '{}'::bigint[] not null
+        constraint username primary key
 );
 
 create table product
@@ -25,7 +24,21 @@ create table users
         constraint users_uk unique,
     password varchar(255) not null,
     role varchar(20),
-    bucketowner varchar(255) not null
+    bucket_owner varchar(255) not null
         constraint users_bucket_username_fk
             references bucket
+);
+
+
+create table bucket_items
+(
+    username   varchar(100) not null
+        constraint bucket_items_bucket_username_fk
+            references bucket,
+    product_id bigint not null
+        constraint bucket_items_product_id_fk
+            references product,
+    quantity   integer not null,
+    constraint bucket_items_pk
+        primary key (username, product_id)
 );

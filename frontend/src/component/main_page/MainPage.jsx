@@ -84,8 +84,6 @@ const MainPage = () => {
                     ))
                 )}
             </main>
-
-
             <footer className="footer">
                 <button className="cart-button" onClick={handleMoveToBucket}>Корзина</button>
             </footer>
