@@ -1,34 +1,38 @@
-package ru.kubsau.practise.internetshop.entities;
+package ru.kubsau.practise.internetshop.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
+import ru.kubsau.practise.internetshop.services.user.enums.Role;
 
 import java.util.Objects;
 
-@SuppressWarnings("All")
-@Data
+
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "users")
 public class User {
     @Id
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     String username;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, unique = true)
     String email;
 
     @Column(nullable = false)
     String password;
 
-    @Column(length = 20)
-    String role;
+    @Enumerated(EnumType.STRING)
+    Role role;
 
-    @OneToOne
-    @JoinColumn(name = "bucketowner", nullable = false)
-    Bucket bucketOwner;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "bucket_owner")
+    Bucket bucket;
 
     @Override
     public final boolean equals(Object o) {

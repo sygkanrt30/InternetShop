@@ -3,7 +3,7 @@ package ru.kubsau.practise.internetshop.services.order;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.kubsau.practise.internetshop.entities.Product;
+import ru.kubsau.practise.internetshop.model.dto.ProductResponseDTO;
 import ru.kubsau.practise.internetshop.repositories.ProductRepository;
 
 @Component
@@ -12,18 +12,18 @@ public class ProductAvailabilityTracker {
     ProductRepository productRepository;
 
     @Transactional
-    public void decrementProductCount(Product product, long amountDecrement) {
-        if (product.getCount() < amountDecrement) {
-            throw new IllegalStateException("There is no so much of this product in the warehouse");
+    public void decrementCount(ProductResponseDTO product, long amountDecrement) {
+        throwIfInsufficientProductCount(product, amountDecrement);
+        var id = product.id();
+        var count = product.count();
+        if (count == amountDecrement) {
+            productRepository.makeAvailableFalse(id);
         }
-        decrementCount(product, amountDecrement);
+        productRepository.updateCount(id, count - amountDecrement);
     }
 
-    private void decrementCount(Product product, long amountDecrement) {
-        var id = product.getId();
-        if (product.getCount() == amountDecrement) {
-            productRepository.makeFalseIsAvailableColumn(id);
-        }
-        productRepository.decrementProductCount(id, amountDecrement);
+    private void throwIfInsufficientProductCount(ProductResponseDTO product, long amountDecrement) {
+        if (product.count() < amountDecrement)
+            throw new IllegalStateException("There is no so much of this product in the warehouse");
     }
 }

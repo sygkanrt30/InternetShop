@@ -5,6 +5,7 @@ import {useAuth} from "../security/AuthContext";
 
 const Register = () => {
     const [username, setUsername] = useState('');
+    const REGISTER_URL = 'http://localhost:8080/auth/register';
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
@@ -14,23 +15,19 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const role = "USER";
         const userData = {
             username,
             email,
-            role,
             password,
-            bucketOwner: {
-                username: username
-            }
         };
 
         try {
-            const response = await fetch('http://localhost:8080/auth/signup', {
+            const response = await fetch(REGISTER_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify(userData),
             });
 

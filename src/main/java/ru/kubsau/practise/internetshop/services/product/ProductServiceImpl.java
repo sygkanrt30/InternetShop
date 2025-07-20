@@ -1,30 +1,32 @@
 package ru.kubsau.practise.internetshop.services.product;
 
-import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.kubsau.practise.internetshop.entities.Product;
+import ru.kubsau.practise.internetshop.model.dto.ProductResponseDTO;
+import ru.kubsau.practise.internetshop.model.entities.Product;
 import ru.kubsau.practise.internetshop.repositories.ProductRepository;
 
-import java.util.Comparator;
+import java.util.Collection;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll()
+    public List<ProductResponseDTO> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "isAvailable"));
+        return productRepository.findAllBy(ProductResponseDTO.class, pageable)
                 .stream()
-                .sorted(Comparator.comparing(Product::isAvailable).reversed())
                 .toList();
     }
 
     @Override
-    public Product getById(long id) {
-        return productRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Product with id `%s` not found".formatted(id)));
+    public List<Product> getProductsAccordingToIds(Collection<Long> productIds) {
+        return productRepository.findAllById(productIds.stream().toList());
     }
 }

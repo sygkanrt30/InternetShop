@@ -1,21 +1,22 @@
 package ru.kubsau.practise.internetshop.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.support.JpaRepositoryImplementation;
 import org.springframework.stereotype.Repository;
-import ru.kubsau.practise.internetshop.entities.Product;
+import ru.kubsau.practise.internetshop.model.entities.Product;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
-
-    @Query(value = "update product set count = count - :countDecrement where id = :id",
-            nativeQuery = true)
+public interface ProductRepository extends JpaRepositoryImplementation<Product, Long> {
     @Modifying
-    void decrementProductCount(long id, long countDecrement);
+    @Query("UPDATE Product p SET p.count = :newCount WHERE p.id = :id")
+    void updateCount(long id, long newCount);
 
-    @Query(value = "update product set is_available = false where id = :id",
-            nativeQuery = true)
     @Modifying
-    void makeFalseIsAvailableColumn(long id);
+    @Query("UPDATE Product p SET p.isAvailable = false WHERE p.id = :id")
+    void makeAvailableFalse(long id);
+
+    <T> Page<T> findAllBy(Class<T> type, Pageable pageable);
 }
