@@ -1,5 +1,6 @@
 package ru.kubsau.practise.internetshop.services.order;
 
+import lombok.experimental.NonFinal;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,14 +13,11 @@ import java.util.Map;
 
 @Component
 public class ExcelFileCreator {
-    String filePath;
-    String fileType;
+    @Value("${excel.file.path}")
+    @NonFinal String filePath;
+    @Value("${excel.file.type}")
+    @NonFinal String fileType;
 
-    public ExcelFileCreator(@Value("${excel.file.path}") String filePath,
-                            @Value("${excel.file.type}") String fileType) {
-        this.filePath = filePath;
-        this.fileType = fileType;
-    }
 
     public void createXlsxFile(Map<ProductResponseDTO, Integer> map, String username) {
         try (var wb = new XSSFWorkbook()) {
