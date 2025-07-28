@@ -1,11 +1,7 @@
 package ru.kubsau.practise.internetshop.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +10,7 @@ import ru.kubsau.practise.internetshop.model.dto.ResponseDTOCreator;
 import ru.kubsau.practise.internetshop.model.dto.UserRequestDTO;
 import ru.kubsau.practise.internetshop.model.dto.mapper.UserMapper;
 import ru.kubsau.practise.internetshop.services.user.UserService;
+import ru.kubsau.practise.internetshop.util.Authenticator;
 
 import javax.validation.Valid;
 
@@ -22,20 +19,12 @@ import javax.validation.Valid;
 public class SecurityController {
     UserService userService;
     UserMapper userMapper;
-    AuthenticationManager authenticationManager;
+    Authenticator authenticator;
 
     @PostMapping("/auth/register")
     public ResponseDTO register(@RequestBody @Valid UserRequestDTO user, HttpServletRequest request) {
         userService.save(userMapper.fromDto(user));
-        doAuthentication(user, request);
+        authenticator.doAuthentication(user, request);
         return ResponseDTOCreator.getResponseOK();
-    }
-
-    private void doAuthentication(UserRequestDTO user, HttpServletRequest request) {
-        var authToken = new UsernamePasswordAuthenticationToken(user.username(), user.password());
-        var authentication = authenticationManager.authenticate(authToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        HttpSession session = request.getSession(true);
-        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
     }
 }

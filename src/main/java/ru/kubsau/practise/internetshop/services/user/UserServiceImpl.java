@@ -9,11 +9,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.kubsau.practise.internetshop.security.UserDetailsImpl;
 import ru.kubsau.practise.internetshop.model.entities.User;
 import ru.kubsau.practise.internetshop.repositories.UserRepository;
+import ru.kubsau.practise.internetshop.security.UserDetailsImpl;
 import ru.kubsau.practise.internetshop.services.bucket.BucketService;
-import ru.kubsau.practise.internetshop.services.user.enums.Role;
 
 @Service
 @AllArgsConstructor
@@ -25,7 +24,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void save(User user) {
-        user.setRole(Role.USER);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         try {
             bucketService.save(user.getBucket());

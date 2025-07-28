@@ -13,7 +13,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Builder
 @Table(name = "bucket")
 public class Bucket {
     @Id
