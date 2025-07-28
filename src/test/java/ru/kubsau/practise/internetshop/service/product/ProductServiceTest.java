@@ -54,7 +54,7 @@ class ProductServiceTest {
     @Test
     @DisplayName("Проверяет верный ли список возвращает getAllProducts()")
     void getAllProductsCorrectCase() {
-        Mockito.when(productRepository.findAllBy(ProductResponseDTO.class, pageable)).thenReturn(productPage);
+        Mockito.when(productRepository.findAllBy(pageable)).thenReturn(productPage);
 
         List<ProductResponseDTO> result = productService.getAll(0, 15);
 
@@ -65,7 +65,7 @@ class ProductServiceTest {
     @Test
     @DisplayName("Сортируется ли список в getAllProducts()")
     void getAllProductsNotCorrectCase() {
-        Mockito.when(productRepository.findAllBy(ProductResponseDTO.class, pageable)).thenReturn(productPage);
+        Mockito.when(productRepository.findAllBy(pageable)).thenReturn(productPage);
 
         List<ProductResponseDTO> result = productService.getAll(0, 15);
 

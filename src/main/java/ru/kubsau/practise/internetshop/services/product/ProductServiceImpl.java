@@ -11,6 +11,9 @@ import ru.kubsau.practise.internetshop.repositories.ProductRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,13 +23,15 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductResponseDTO> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "isAvailable"));
-        return productRepository.findAllBy(ProductResponseDTO.class, pageable)
+        return productRepository.findAllBy(pageable)
                 .stream()
                 .toList();
     }
 
     @Override
-    public List<Product> getProductsAccordingToIds(Collection<Long> productIds) {
-        return productRepository.findAllById(productIds.stream().toList());
+    public Map<Long, Product> getProductsByIds(Collection<Long> productIds) {
+        List<Product> products = productRepository.findAllById(productIds);
+        return products.stream()
+                .collect(Collectors.toMap(Product::getId, Function.identity()));
     }
 }

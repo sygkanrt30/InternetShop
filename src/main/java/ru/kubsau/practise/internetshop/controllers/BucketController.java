@@ -13,46 +13,51 @@ import java.util.Map;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/buckets/")
+@RequestMapping("/buckets")
 public class BucketController {
     BucketService bucketService;
 
-    @GetMapping("get")
+    @GetMapping("/get")
     @PreAuthorize("isAuthenticated()")
     public Map<ProductResponseDTO, Integer> get() {
-        String currentUsername = AuthenticationContext.getCurrentUsername();
+        String currentUsername = getCurrentUsername();
         return bucketService.getBucket(currentUsername);
     }
 
-    @PatchMapping("clear-bucket")
+    @PatchMapping("/clear-bucket")
     @PreAuthorize("isAuthenticated()")
     public ResponseDTO clear() {
-        String currentUsername = AuthenticationContext.getCurrentUsername();
+        String currentUsername = getCurrentUsername();
         bucketService.clearBucket(currentUsername);
         return ResponseDTOCreator.getResponseOK();
     }
 
-    @PatchMapping("remove-all-products-this-type")
+    @PatchMapping("/remove-all-products-this-type")
     @PreAuthorize("isAuthenticated()")
     public ResponseDTO removeAllProductsOfThisType(@RequestParam long productId) {
-        String currentUsername = AuthenticationContext.getCurrentUsername();
+        String currentUsername = getCurrentUsername();
         bucketService.removeAllProductsOfThisType(currentUsername, productId);
         return ResponseDTOCreator.getResponseOK();
     }
 
-    @PatchMapping("remove-product")
+    @PatchMapping("/remove-product")
     @PreAuthorize("isAuthenticated()")
     public ResponseDTO removeProduct(@RequestParam long productId) {
-        String currentUsername = AuthenticationContext.getCurrentUsername();
+        String currentUsername = getCurrentUsername();
         bucketService.removeProduct(currentUsername, productId);
         return ResponseDTOCreator.getResponseOK();
     }
 
-    @PatchMapping("add-products")
+    @PatchMapping("/add-products")
     @PreAuthorize("isAuthenticated()")
     public ResponseDTO addProducts(@RequestParam long productId) {
-        String currentUsername = AuthenticationContext.getCurrentUsername();
+        String currentUsername = getCurrentUsername();
         bucketService.addProducts(currentUsername, productId);
         return ResponseDTOCreator.getResponseOK();
     }
+
+    private String getCurrentUsername() {
+        return AuthenticationContext.getCurrentUsername();
+    }
+
 }

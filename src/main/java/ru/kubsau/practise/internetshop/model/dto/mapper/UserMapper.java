@@ -1,6 +1,7 @@
 package ru.kubsau.practise.internetshop.model.dto.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 import ru.kubsau.practise.internetshop.model.dto.UserRequestDTO;
 import ru.kubsau.practise.internetshop.model.entities.Bucket;
@@ -11,19 +12,11 @@ import java.util.HashMap;
 @Mapper(componentModel = "spring")
 @Component
 public interface UserMapper {
-    default User fromDto(UserRequestDTO userDTO) {
-        return User.builder()
-                .username(userDTO.username())
-                .email(userDTO.email())
-                .password(userDTO.password())
-                .bucket(createDefaultBucket(userDTO.username()))
-                .build();
-    }
+    @Mapping(target = "role", constant = "USER")
+    @Mapping(target = "bucket", expression = "java(createDefaultBucket(userDTO.username()))")
+    User fromDto(UserRequestDTO userDTO);
 
-    private Bucket createDefaultBucket(String username) {
-        return Bucket.builder()
-                .username(username)
-                .products(new HashMap<>())
-                .build();
+    default Bucket createDefaultBucket(String username) {
+        return new Bucket(username, new HashMap<>());
     }
 }
