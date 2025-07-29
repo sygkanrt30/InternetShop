@@ -19,7 +19,7 @@ public class ExcelFileCreatorTest {
 
     @BeforeEach
     public void init() {
-        excelFileCreator = new ExcelFileCreator("orders/order_", ".xlsx");
+        excelFileCreator = new ExcelFileCreator();
     }
 
     @Test
@@ -34,7 +34,7 @@ public class ExcelFileCreatorTest {
         String username = "test";
         var fullPath = String.format("%s%s%s", "orders/order_", username, ".xlsx");
 
-        excelFileCreator.createXlsxFile(products, username);
+        excelFileCreator.createExcelDocument(products, username);
 
         var output = Paths.get(fullPath);
         Assertions.assertTrue(output.toFile().exists());

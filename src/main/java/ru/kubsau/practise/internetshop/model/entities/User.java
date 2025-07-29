@@ -31,7 +31,7 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "bucket_owner")
-    Bucket bucket;
+    BucketEntity bucket;
 
     @Override
     public final boolean equals(Object o) {

@@ -21,7 +21,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public void createOrder(String username) {
         var products = getProductsInBucketOrThrow(username);
-        fileCreator.createXlsxFile(products, username);
+        fileCreator.createExcelDocument(products, username);
         removeGarbageDataInOtherTables(username, products);
         log.info("Order created successfully");
     }
