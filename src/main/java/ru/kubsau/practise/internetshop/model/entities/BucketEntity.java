@@ -14,7 +14,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "bucket")
-public class Bucket {
+public class BucketEntity {
     @Id
     String username;
 
@@ -33,7 +33,7 @@ public class Bucket {
         Class<?> oEffectiveClass = o instanceof HibernateProxy proxy ? proxy.getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy proxy ? proxy.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Bucket bucket = (Bucket) o;
+        BucketEntity bucket = (BucketEntity) o;
         return getUsername() != null && Objects.equals(getUsername(), bucket.getUsername());
     }
 

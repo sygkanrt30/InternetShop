@@ -1,4 +1,4 @@
-package ru.kubsau.practise.internetshop.controllers;
+package ru.kubsau.practise.internetshop.handlers;
 
 import com.sun.jdi.request.InvalidRequestStateException;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,7 +12,7 @@ import ru.kubsau.practise.internetshop.model.dto.ResponseDTOCreator;
 
 @ControllerAdvice
 @Slf4j
-public class GlobalExceptionController {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseDTO catchInvalidRequestException(InvalidRequestStateException e) {

@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.kubsau.practise.internetshop.model.dto.ProductResponseDTO;
 import ru.kubsau.practise.internetshop.model.dto.mapper.ProductMapper;
-import ru.kubsau.practise.internetshop.model.entities.Bucket;
+import ru.kubsau.practise.internetshop.model.entities.BucketEntity;
 import ru.kubsau.practise.internetshop.model.entities.Product;
 import ru.kubsau.practise.internetshop.repositories.BucketRepository;
 import ru.kubsau.practise.internetshop.services.product.ProductService;
@@ -21,7 +21,7 @@ public class BucketServiceImpl implements BucketService {
     BucketRepository bucketRepository;
     ProductService productService;
     ProductMapper productMapper;
-    BucketInnerService bucketInnerService;
+    BucketEntityService bucketInnerService;
 
     @Override
     public Map<ProductResponseDTO, Integer> getBucket(String username) {
@@ -65,7 +65,7 @@ public class BucketServiceImpl implements BucketService {
 
     @Transactional
     @Override
-    public void save(Bucket bucket) {
+    public void save(BucketEntity bucket) {
         bucketRepository.save(bucket);
     }
 

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.kubsau.practise.internetshop.model.dto.ProductResponseDTO;
 
+import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
@@ -14,15 +15,17 @@ import java.util.Map;
 @Component
 public class ExcelFileCreator {
     @Value("${excel.file.path}")
-    @NonFinal String filePath;
+    @NonFinal
+    String path4SafeDocument;
     @Value("${excel.file.type}")
-    @NonFinal String fileType;
+    @NonFinal
+    String typeOfFile2Save;
 
 
-    public void createXlsxFile(Map<ProductResponseDTO, Integer> map, String username) {
+    public void createExcelDocument(Map<ProductResponseDTO, Integer> map, String username) {
         try (var wb = new XSSFWorkbook()) {
             createExcelSheet(wb, map, username);
-            createXlsxFile(wb, username);
+            createExcelDocument(wb, username);
         } catch (Exception e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
@@ -38,9 +41,10 @@ public class ExcelFileCreator {
         }
     }
 
-    private void createXlsxFile(XSSFWorkbook file, String username) throws IOException {
-        try (var out = new FileOutputStream(filePath + username.trim() + fileType)) {
-            file.write(out);
+    private void createExcelDocument(XSSFWorkbook file, String username) throws IOException {
+        try (var outputStream = new FileOutputStream(path4SafeDocument + username.trim() + typeOfFile2Save);
+             var bufferOut = new BufferedOutputStream(outputStream)) {
+            file.write(bufferOut);
         }
     }
 

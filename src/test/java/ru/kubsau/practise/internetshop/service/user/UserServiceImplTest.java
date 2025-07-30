@@ -10,7 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.kubsau.practise.internetshop.model.entities.Bucket;
+import ru.kubsau.practise.internetshop.model.entities.BucketEntity;
 import ru.kubsau.practise.internetshop.model.entities.User;
 import ru.kubsau.practise.internetshop.repositories.UserRepository;
 import ru.kubsau.practise.internetshop.security.config.SecurityConfig;
@@ -31,7 +31,7 @@ public class UserServiceImplTest {
     public void setUp() {
         PasswordEncoder passwordEncoder = SecurityConfig.passwordEncoder();
         userServiceImpl = new UserServiceImpl(userRepository, passwordEncoder, bucketService);
-        userForSave = new User("slava", "slava.vy.2006@gmail.com", "Ss@159357", Role.USER, new Bucket());
+        userForSave = new User("slava", "slava.vy.2006@gmail.com", "Ss@159357", Role.USER, new BucketEntity());
     }
 
     @Test

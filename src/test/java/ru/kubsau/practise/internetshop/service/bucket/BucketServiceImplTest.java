@@ -10,9 +10,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.kubsau.practise.internetshop.model.dto.ProductResponseDTO;
 import ru.kubsau.practise.internetshop.model.dto.mapper.ProductMapper;
-import ru.kubsau.practise.internetshop.model.entities.Bucket;
+import ru.kubsau.practise.internetshop.model.entities.BucketEntity;
 import ru.kubsau.practise.internetshop.model.entities.Product;
-import ru.kubsau.practise.internetshop.services.bucket.BucketInnerService;
+import ru.kubsau.practise.internetshop.services.bucket.BucketEntityService;
 import ru.kubsau.practise.internetshop.services.bucket.BucketServiceImpl;
 import ru.kubsau.practise.internetshop.services.product.ProductService;
 
@@ -27,7 +27,7 @@ public class BucketServiceImplTest {
     @Mock
     private ProductService productService;
     @Mock
-    private BucketInnerService bucketInnerService;
+    private BucketEntityService bucketInnerService;
     @InjectMocks
     private BucketServiceImpl bucketServiceImpl;
 
@@ -40,7 +40,7 @@ public class BucketServiceImplTest {
                 2L, 1
         ));
 
-        var bucket = new Bucket("username", productsInBucket);
+        var bucket = new BucketEntity("username", productsInBucket);
 
         Mockito.when(productService.getProductsByIds(Set.of(2L))).thenReturn(Map.of(2L, product));
         Mockito.when(bucketInnerService.getBucketOrThrowException(Mockito.anyString())).thenReturn(bucket);
@@ -57,7 +57,7 @@ public class BucketServiceImplTest {
     @DisplayName("2 getProductsInBucket(username) пустая мапа")
     public void getProductsInBucket2() {
         var emptyMap = new HashMap<Long, Integer>();
-        var bucket = new Bucket("username", emptyMap);
+        var bucket = new BucketEntity("username", emptyMap);
         Mockito.when(bucketInnerService.getBucketOrThrowException(Mockito.anyString())).thenReturn(bucket);
         Mockito.when(productService.getProductsByIds(Set.of())).thenReturn(Map.of());
 
@@ -71,7 +71,7 @@ public class BucketServiceImplTest {
     @DisplayName("2 clearBucket(String username) корректный сценарий")
     public void clearBucket2_CorrectCase() {
         var emptyMap = new HashMap<Long, Integer>();
-        Bucket bucket = new Bucket("username", emptyMap);
+        BucketEntity bucket = new BucketEntity("username", emptyMap);
 
         Mockito.when(bucketInnerService.getBucketOrThrowException(Mockito.anyString())).thenReturn(bucket);
 

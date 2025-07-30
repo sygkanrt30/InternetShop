@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 import ru.kubsau.practise.internetshop.model.dto.UserRequestDTO;
-import ru.kubsau.practise.internetshop.model.entities.Bucket;
+import ru.kubsau.practise.internetshop.model.entities.BucketEntity;
 import ru.kubsau.practise.internetshop.model.entities.User;
 
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public interface UserMapper {
     @Mapping(target = "bucket", expression = "java(createDefaultBucket(userDTO.username()))")
     User fromDto(UserRequestDTO userDTO);
 
-    default Bucket createDefaultBucket(String username) {
-        return new Bucket(username, new HashMap<>());
+    default BucketEntity createDefaultBucket(String username) {
+        return new BucketEntity(username, new HashMap<>());
     }
 }
